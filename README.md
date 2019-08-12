@@ -1,2 +1,2 @@
 # GMRC.API
-GMRC App front-end
+GMRC App back-end
