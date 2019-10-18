@@ -4,10 +4,22 @@ const maintenanceRoutes = require('./maintenance');
 const roomRoutes = require('./room');
 const tenantRoutes = require('./tenant');
 const inquiryRoutes = require('./inquiry');
+const userRoutes = require('./user');
+const authRoutes = require('./auth');
 module.exports = () => {
   routes.use(
       '/api/maintenance',
       maintenanceRoutes(),
+  );
+
+  routes.use(
+      '/api/user',
+      userRoutes(),
+  );
+
+  routes.use(
+      '/api/auth',
+      authRoutes(),
   );
 
   routes.use(
