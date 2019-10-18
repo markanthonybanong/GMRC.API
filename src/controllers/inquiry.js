@@ -3,7 +3,6 @@ const Inquiry = require('../models/inquiry');
 const inquiryAggregate = require('../aggregation/inquiry');
 const mongoose = require('mongoose');
 const objectId = mongoose.Types.ObjectId;
-const moment = require('moment');
 
 exports.setValueForWillOccupyInKey = function(searchFilter) {
   const modifiedFilter = {};
