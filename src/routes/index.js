@@ -1,4 +1,5 @@
 // eslint-disable-next-line new-cap
+const passport = require('passport');
 const routes = require('express').Router();
 const maintenanceRoutes = require('./maintenance');
 const roomRoutes = require('./room');
@@ -24,16 +25,19 @@ module.exports = () => {
 
   routes.use(
       '/api/room',
+      passport.authenticate('jwt', {session: false}),
       roomRoutes(),
   );
 
   routes.use(
       '/api/tenant',
+      passport.authenticate('jwt', {session: false}),
       tenantRoutes(),
   );
 
   routes.use(
       '/api/inquiry',
+      passport.authenticate('jwt', {session: false}),
       inquiryRoutes(),
   );
   return routes;
