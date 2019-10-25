@@ -2,16 +2,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongooseAggregatePaginate = require('mongoose-aggregate-paginate');
 const entrySchema = new Schema({
-  tenant: {
-    type: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Tenant',
-    }],
-  },
-  roomType: {
-    type: String,
+  roomNumber: {
+    type: Number,
     trim: true,
     required: true,
+  },
+  tenant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tenant',
   },
   monthlyRent: {
     type: Number,
@@ -22,6 +20,15 @@ const entrySchema = new Schema({
     type: String,
     trim: true,
     required: true,
+  },
+  dateEntry: {
+    type: Date,
+    trim: true,
+    required: true,
+  },
+  dateExit: {
+    type: Date,
+    trim: true,
   },
   oneMonthDeposit: {
     type: String,

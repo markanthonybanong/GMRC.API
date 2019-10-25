@@ -1,12 +1,17 @@
 const httpStatusCode = require('http-status-codes');
 const Entry = require('../models/entry');
+const entryAggregate = require('../aggregation/entry');
+const mongoose = require('mongoose');
+const objectId = mongoose.Types.ObjectId;
 
 exports.createEntry = async (req, res) => {
   console.log('req ', req.body);
   const {
+    roomNumber,
     tenantObjectId,
-    roomType,
     monthlyRent,
+    dateEntry,
+    dateExit,
     key,
     oneMonthDeposit,
     oneMonthDepositBalance,
@@ -15,10 +20,12 @@ exports.createEntry = async (req, res) => {
   } = req.body;
 
   const entry = new Entry({
+    roomNumber: roomNumber,
     tenant: tenantObjectId,
-    roomType: roomType,
     monthlyRent: monthlyRent,
     key: key,
+    dateEntry: dateEntry,
+    dateExit: dateExit,
     oneMonthDeposit: oneMonthDeposit,
     oneMonthDepositBalance: oneMonthDepositBalance,
     oneMonthAdvance: oneMonthAdvance,
@@ -36,5 +43,26 @@ exports.createEntry = async (req, res) => {
           .json(entry);
     }
   });
+};
+exports.getEntries = async (req, res) => {
+  const options = {
+    page: req.body.page,
+    limit: req.body.limit,
+  };
+  Entry.aggregatePaginate(entryAggregate(req.body.filters), options)
+      .then( (entry) => {
+        res.status(httpStatusCode.OK)
+            .send({
+              data: entry.data,
+              pageCount: entry.pageCount,
+              totalCount: entry.totalCount,
+            });
+      })
+      .catch((err) => {
+        res.status(httpStatusCode.BAD_REQUEST)
+            .send({
+              message: err,
+            });
+      });
 };
 

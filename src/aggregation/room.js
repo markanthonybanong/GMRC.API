@@ -12,6 +12,21 @@ const objectId = mongoose.Types.ObjectId;
 function aggregate(filter) {
   const aggregate = Room.aggregate();
   switch (filter.type) {
+    case FilterType.ALLROOMS:
+      aggregate.match({
+        $or: [
+          {type: RoomTypes.TRANSIENT},
+          {type: RoomTypes.PRIVATE},
+          {type: RoomTypes.BEDSPACE},
+        ],
+      }).sort({
+        number: 1,
+      }).project({
+        created_at: 0,
+        updatedAt: 0,
+        __v: 0,
+      });
+      break;
     case FilterType.TRANSIENTPRIVATEROOMS:
       aggregate.match({
         $or: [
