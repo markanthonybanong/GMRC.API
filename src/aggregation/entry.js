@@ -10,7 +10,6 @@ const objectId = mongoose.Types.ObjectId;
  * @return {object} moongose agregated object.
  */
 function aggregate(filter) {
-  console.log('FILTER', filter);
   const aggregate = Entry.aggregate();
   switch (filter.type) {
     case FilterType.ALLENTRIES:
@@ -19,6 +18,8 @@ function aggregate(filter) {
         localField: 'tenant',
         foreignField: '_id',
         as: 'tenant',
+      }).sort({
+        roomNumber: 1,
       }).project({
         created_at: 0,
         updatedAt: 0,
@@ -28,13 +29,35 @@ function aggregate(filter) {
     case FilterType.ENTRYBYOBJECTID:
       aggregate.match({
         _id: objectId(filter.entryObjectId),
+      }).lookup({
+        from: 'tenants',
+        localField: 'tenant',
+        foreignField: '_id',
+        as: 'tenant',
+      }).sort({
+        roomNumber: 1,
+      }).project({
+        created_at: 0,
+        updatedAt: 0,
+        __v: 0,
       });
       break;
     case FilterType.ADVANCESEARCHENTRY:
       aggregate.match({
         $and: [
-          paymentController.setValueForDatesKey(filter.entryFilter),
+          paymentController.setValueForSearchFilter(filter.entryFilter),
         ],
+      }).lookup({
+        from: 'tenants',
+        localField: 'tenant',
+        foreignField: '_id',
+        as: 'tenant',
+      }).sort({
+        roomNumber: 1,
+      }).project({
+        created_at: 0,
+        updatedAt: 0,
+        __v: 0,
       });
       break;
   }

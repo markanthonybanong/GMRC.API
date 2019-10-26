@@ -6,5 +6,7 @@ module.exports = () => {
 
   paymentRoutes.post('/page', paymentController.getEntries);
 
+  paymentRoutes.put('/updateEntry/:id', paymentController.updateEntry);
+
   return paymentRoutes;
 };
