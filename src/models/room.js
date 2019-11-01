@@ -36,7 +36,11 @@ const roomSchema = new Schema({
       enum: Object.values(RoomStatuses),
       required: true,
     },
-    dueRent: {
+    dueRentDate: {
+      type: Number,
+      trim: true,
+    },
+    monthlyRent: {
       type: Number,
       trim: true,
     },

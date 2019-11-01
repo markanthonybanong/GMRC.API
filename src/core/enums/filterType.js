@@ -1,5 +1,6 @@
 exports.FilterType = Object.freeze({
   ALLROOMS: 'allRooms',
+  ROOMNUMBER: 'roomNumber',
   INQUIRYBYOBJECTID: 'inquiryByObjectId',
   ADVANCESEARCHINQUIRY: 'advanceSearchInquiry',
   TRANSIENTPRIVATEROOMS: 'transientPrivateRooms',
