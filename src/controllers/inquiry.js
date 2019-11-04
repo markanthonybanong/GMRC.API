@@ -96,6 +96,7 @@ exports.getInquiries = async (req, res) => {
     page: req.body.page,
     limit: req.body.limit,
   };
+
   Inquiry.aggregatePaginate(inquiryAggregate(req.body.filters), options)
       .then( (inquiries) => {
         res.status(httpStatusCode.OK)

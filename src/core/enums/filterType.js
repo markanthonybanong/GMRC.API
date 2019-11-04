@@ -15,4 +15,5 @@ exports.FilterType = Object.freeze({
   ALLENTRIES: 'allEntries',
   ENTRYBYOBJECTID: 'entryByObjectId',
   ADVANCESEARCHENTRY: 'advanceSearchEntry',
+  ROOMPAYMENTBYOBJECTID: 'roomPaymentByObjectId'
 });

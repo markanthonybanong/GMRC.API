@@ -1,6 +1,8 @@
 const httpStatusCode = require('http-status-codes');
 const Entry = require('../models/entry');
+const RoomPayment = require('../models/roomPayment');
 const entryAggregate = require('../aggregation/entry');
+const roomPaymentAggregate = require('../aggregation/roomPayment');
 const mongoose = require('mongoose');
 const objectId = mongoose.Types.ObjectId;
 
@@ -125,4 +127,123 @@ exports.updateEntry = async (req, res) => {
       }
   );
 };
+exports.createRoomPayment = async (req, res) => {
+  const {
+    amountKWUsed,
+    date,
+    electricBillBalance,
+    electricBillStatus,
+    presentReading,
+    presentReadingKWUsed,
+    previousReading,
+    previousReadingKWUsed,
+    riceCookerBillBalance,
+    riceCookerBillStatus,
+    roomNumber,
+    waterBillBalance,
+    waterBillStatus,
+    roomTenants,
+  } = req.body;
+
+  const roomPayment = new RoomPayment({
+    amountKWUsed: amountKWUsed,
+    date: date,
+    electricBillBalance: electricBillBalance,
+    electricBillStatus: electricBillStatus,
+    presentReading: presentReading,
+    presentReadingKWUsed: presentReadingKWUsed,
+    previousReading: previousReading,
+    previousReadingKWUsed: previousReadingKWUsed,
+    riceCookerBillBalance: riceCookerBillBalance,
+    riceCookerBillStatus: riceCookerBillStatus,
+    roomNumber: roomNumber,
+    waterBillBalance: waterBillBalance,
+    waterBillStatus: waterBillStatus,
+    roomTenants: roomTenants,
+  });
+
+  roomPayment.save( (err, entry)=> {
+    if (err) {
+      res.status(httpStatusCode.BAD_REQUEST)
+          .send({
+            message: err,
+          });
+    } else {
+      res.status(httpStatusCode.OK)
+          .json(entry);
+    }
+  });
+};
+exports.getRoomPayments = async (req, res) => {
+  const options = {
+    page: req.body.page,
+    limit: req.body.limit,
+  };
+
+  RoomPayment.aggregatePaginate(roomPaymentAggregate(req.body.filters), options)
+      .then( (roomPayments) => {
+        res.status(httpStatusCode.OK)
+            .send({
+              data: roomPayments.data,
+              pageCount: roomPayments.pageCount,
+              totalCount: roomPayments.totalCount,
+            });
+      })
+      .catch((err) => {
+        res.status(httpStatusCode.BAD_REQUEST)
+            .send({
+              message: err,
+            });
+      });
+};
+exports.updateRoomPayment = async (req, res) => {
+  const {
+    amountKWUsed,
+    date,
+    electricBillBalance,
+    electricBillStatus,
+    presentReading,
+    presentReadingKWUsed,
+    previousReading,
+    previousReadingKWUsed,
+    riceCookerBillBalance,
+    riceCookerBillStatus,
+    roomNumber,
+    waterBillBalance,
+    waterBillStatus,
+    roomTenants,
+  } = req.body;
+  const {id: roomPaymentId} = req.params;
+  RoomPayment.findByIdAndUpdate(roomPaymentId,
+      {
+        amountKWUsed: amountKWUsed,
+        date: date,
+        electricBillBalance: electricBillBalance,
+        electricBillStatus: electricBillStatus,
+        presentReading: presentReading,
+        presentReadingKWUsed: presentReadingKWUsed,
+        previousReading: previousReading,
+        previousReadingKWUsed: previousReadingKWUsed,
+        riceCookerBillBalance: riceCookerBillBalance,
+        riceCookerBillStatus: riceCookerBillStatus,
+        roomNumber: roomNumber,
+        waterBillBalance: waterBillBalance,
+        waterBillStatus: waterBillStatus,
+        roomTenants: roomTenants,
+      },
+      {new: true},
+      (err, roomPayment) => {
+        if (err) {
+          res.status(httpStatusCode.BAD_REQUEST)
+              .send({
+                message: err,
+              });
+        } else {
+          res.status(httpStatusCode.OK)
+              .json(roomPayment);
+        }
+      }
+  );
+};
+
 

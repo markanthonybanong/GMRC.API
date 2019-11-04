@@ -12,10 +12,11 @@ const roomPaymentSchema = new Schema({
     type: String,
     trim: true,
     required: true,
+    unique: true,
   },
   electricBillBalance: [{
     balance: {
-      type: number,
+      type: Number,
       trim: true,
     },
   }],
@@ -47,7 +48,7 @@ const roomPaymentSchema = new Schema({
   },
   riceCookerBillBalance: [{
     balance: {
-      type: number,
+      type: Number,
       trim: true,
     },
   }],
@@ -64,7 +65,7 @@ const roomPaymentSchema = new Schema({
   },
   waterBillBalance: [{
     balance: {
-      type: number,
+      type: Number,
       trim: true,
     },
   }],
@@ -74,6 +75,34 @@ const roomPaymentSchema = new Schema({
     required: true,
     trim: true,
   },
+  roomTenants: [{
+    dueRentDates: [{
+      type: Number,
+      trim: true,
+    }],
+    indexes: [{
+      type: Number,
+      trim: true,
+    }],
+    names: [{
+      type: String,
+      trim: true,
+    }],
+    rentStatuses: [{
+      value: {
+        type: Object.values(PaymentStatus),
+        trim: true,
+      },
+      balance: {
+        type: Number,
+        trim: true,
+      },
+    }],
+    rents: [{
+      type: Number,
+      trim: true,
+    }],
+  }],
 }, {timestamps: {createdAt: 'created_at'}});
 
 roomPaymentSchema.plugin(mongooseAggregatePaginate);
