@@ -212,6 +212,7 @@ exports.updateRoomPayment = async (req, res) => {
     waterBillBalance,
     waterBillStatus,
     roomTenants,
+    gender,
   } = req.body;
   const {id: roomPaymentId} = req.params;
   RoomPayment.findByIdAndUpdate(roomPaymentId,

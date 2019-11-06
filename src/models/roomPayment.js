@@ -12,7 +12,6 @@ const roomPaymentSchema = new Schema({
     type: String,
     trim: true,
     required: true,
-    unique: true,
   },
   electricBillBalance: [{
     balance: {
@@ -90,7 +89,7 @@ const roomPaymentSchema = new Schema({
     }],
     rentStatuses: [{
       value: {
-        type: Object.values(PaymentStatus),
+        type: String,
         trim: true,
       },
       balance: {
@@ -104,7 +103,12 @@ const roomPaymentSchema = new Schema({
     }],
   }],
 }, {timestamps: {createdAt: 'created_at'}});
-
+roomPaymentSchema.index({
+  date: 1,
+  roomNumber: 1,
+}, {
+  unique: true,
+});
 roomPaymentSchema.plugin(mongooseAggregatePaginate);
 module.exports = mongoose.model('RoomPayment', roomPaymentSchema);
 
