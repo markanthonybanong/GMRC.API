@@ -6,7 +6,7 @@ const roomPaymentAggregate = require('../aggregation/roomPayment');
 const mongoose = require('mongoose');
 const objectId = mongoose.Types.ObjectId;
 
-exports.setValueForSearchFilter = function(searchFilter) {
+exports.setValueForEntrySearchFilter = function(searchFilter) {
   const modifiedFilter = {};
   Object.entries(searchFilter).forEach( (element) => {
     switch (element[0]) {
