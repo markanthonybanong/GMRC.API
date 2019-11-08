@@ -11,6 +11,16 @@ const objectId = mongoose.Types.ObjectId;
 function aggregate(filter) {
   const aggregate = Tenant.aggregate();
   switch (filter.type) {
+    case FilterType.ALLTENANTS: {
+      aggregate.sort({
+        roomNumber: 1,
+      }).project({
+        created_at: 0,
+        updatedAt: 0,
+        __v: 0,
+      });
+      break;
+    }
     case FilterType.TENANTBYKEYSTROKE:
       aggregate.match({
         $or: [

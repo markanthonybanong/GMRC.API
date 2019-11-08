@@ -45,7 +45,7 @@ function aggregate(filter) {
     case FilterType.ADVANCESEARCHENTRY:
       aggregate.match({
         $and: [
-          paymentController.setValueForSearchFilter(filter.entryFilter),
+          paymentController.setValueForEntrySearchFilter(filter.entryFilter),
         ],
       }).lookup({
         from: 'tenants',

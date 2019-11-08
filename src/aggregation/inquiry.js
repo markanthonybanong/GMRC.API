@@ -12,6 +12,16 @@ const objectId = mongoose.Types.ObjectId;
 function aggregate(filter) {
   const aggregate = Inquiry.aggregate();
   switch (filter.type) {
+    case FilterType.ALLINQUIRIES: {
+      aggregate.sort({
+        willOccupyIn: -1,
+      }).project({
+        created_at: 0,
+        updatedAt: 0,
+        __v: 0,
+      });
+      break;
+    }
     case FilterType.INQUIRYBYOBJECTID:
       aggregate.match({
         _id: objectId(filter.inquiryObjectId),
