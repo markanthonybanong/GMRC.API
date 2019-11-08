@@ -12,6 +12,30 @@ const objectId = mongoose.Types.ObjectId;
 function aggregate(filter) {
   const aggregate = Room.aggregate();
   switch (filter.type) {
+    case FilterType.ALLROOMS:
+      aggregate.match({
+        $or: [
+          {type: RoomTypes.TRANSIENT},
+          {type: RoomTypes.PRIVATE},
+          {type: RoomTypes.BEDSPACE},
+        ],
+      }).sort({
+        number: 1,
+      }).project({
+        created_at: 0,
+        updatedAt: 0,
+        __v: 0,
+      });
+      break;
+    case FilterType.ROOMNUMBER:
+      aggregate.match({
+        number: filter.roomFilter.number,
+      }).project({
+        created_at: 0,
+        updatedAt: 0,
+        __v: 0,
+      });
+      break;
     case FilterType.TRANSIENTPRIVATEROOMS:
       aggregate.match({
         $or: [
@@ -128,11 +152,14 @@ function aggregate(filter) {
                               $ne: ['$$deck.away', null],
                             },
                             then: [{
+                              willReturnIn: {$arrayElemAt: ['$$deck.away.willReturnIn', 0]},
                               inDate: {$arrayElemAt: ['$$deck.away.inDate', 0]},
                               inTime: {$arrayElemAt: ['$$deck.away.inTime', 0]},
                               outDate: {$arrayElemAt: ['$$deck.away.outDate', 0]},
                               outTime: {$arrayElemAt: ['$$deck.away.outTime', 0]},
                               status: {$arrayElemAt: ['$$deck.away.status', 0]},
+                              dueRentDate: {$arrayElemAt: ['$$deck.away.dueRentDate', 0]},
+                              rent: {$arrayElemAt: ['$$deck.away.rent', 0]},
                               tenant: {
                                 $cond: {
                                   if: {
@@ -235,11 +262,14 @@ function aggregate(filter) {
                               $ne: ['$$deck.away', null],
                             },
                             then: [{
+                              willReturnIn: {$arrayElemAt: ['$$deck.away.willReturnIn', 0]},
                               inDate: {$arrayElemAt: ['$$deck.away.inDate', 0]},
                               inTime: {$arrayElemAt: ['$$deck.away.inTime', 0]},
                               outDate: {$arrayElemAt: ['$$deck.away.outDate', 0]},
                               outTime: {$arrayElemAt: ['$$deck.away.outTime', 0]},
                               status: {$arrayElemAt: ['$$deck.away.status', 0]},
+                              dueRentDate: {$arrayElemAt: ['$$deck.away.dueRentDate', 0]},
+                              rent: {$arrayElemAt: ['$$deck.away.rent', 0]},
                               tenant: {
                                 $cond: {
                                   if: {
@@ -343,11 +373,14 @@ function aggregate(filter) {
                                   $ne: ['$$deck.away', null],
                                 },
                                 then: [{
+                                  willReturnIn: {$arrayElemAt: ['$$deck.away.willReturnIn', 0]},
                                   inDate: {$arrayElemAt: ['$$deck.away.inDate', 0]},
                                   inTime: {$arrayElemAt: ['$$deck.away.inTime', 0]},
                                   outDate: {$arrayElemAt: ['$$deck.away.outDate', 0]},
                                   outTime: {$arrayElemAt: ['$$deck.away.outTime', 0]},
                                   status: {$arrayElemAt: ['$$deck.away.status', 0]},
+                                  dueRentDate: {$arrayElemAt: ['$$deck.away.dueRentDate', 0]},
+                                  rent: {$arrayElemAt: ['$$deck.away.rent', 0]},
                                   tenant: {
                                     $cond: {
                                       if: {

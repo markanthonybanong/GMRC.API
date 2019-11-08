@@ -15,6 +15,10 @@ function aggregate(filter) {
     case FilterType.INQUIRYBYOBJECTID:
       aggregate.match({
         _id: objectId(filter.inquiryObjectId),
+      }).project({
+        created_at: 0,
+        updatedAt: 0,
+        __v: 0,
       });
       break;
     case FilterType.ADVANCESEARCHINQUIRY:
@@ -22,6 +26,10 @@ function aggregate(filter) {
         $and: [
           inquiryController.setValueForWillOccupyInKey(filter.inquiryFilter),
         ],
+      }).project({
+        created_at: 0,
+        updatedAt: 0,
+        __v: 0,
       });
       break;
   }

@@ -1,10 +1,11 @@
-// eslint-disable-next-line new-cap
+/* eslint-disable new-cap */
 const passport = require('passport');
 const routes = require('express').Router();
 const maintenanceRoutes = require('./maintenance');
 const roomRoutes = require('./room');
 const tenantRoutes = require('./tenant');
 const inquiryRoutes = require('./inquiry');
+const paymentRoutes = require('./payment');
 const userRoutes = require('./user');
 const authRoutes = require('./auth');
 module.exports = () => {
@@ -40,6 +41,13 @@ module.exports = () => {
       passport.authenticate('jwt', {session: false}),
       inquiryRoutes(),
   );
+
+  routes.use(
+      '/api/payment',
+      passport.authenticate('jwt', {session: false}),
+      paymentRoutes(),
+  );
+
   return routes;
 };
 
