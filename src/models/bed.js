@@ -23,7 +23,11 @@ const bedSchema = new Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Tenant',
     },
-    dueRent: {
+    dueRentDate: {
+      type: Number,
+      trim: true,
+    },
+    monthlyRent: {
       type: Number,
       trim: true,
     },
@@ -51,6 +55,14 @@ const bedSchema = new Schema({
       },
       outTime: {
         type: String,
+        trim: true,
+      },
+      dueRentDate: {
+        type: Number,
+        trim: true,
+      },
+      rent: {
+        type: Number,
         trim: true,
       },
       tenant: {

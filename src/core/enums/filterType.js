@@ -14,4 +14,10 @@ exports.FilterType = Object.freeze({
   TENANTBYKEYSTROKE: 'tenantByKeyStroke',
   TENANTBYOBJECTID: 'tenantByObjectId',
   ADVANCESEARCHTENANT: 'advanceSearchTenant',
+  ALLENTRIES: 'allEntries',
+  ENTRYBYOBJECTID: 'entryByObjectId',
+  ADVANCESEARCHENTRY: 'advanceSearchEntry',
+  ALLROOMPAYMENTS: 'allRoomPayments',
+  ROOMPAYMENTBYOBJECTID: 'roomPaymentByObjectId',
+  ADVANCESEARCHROOMPAYMENT: 'advanceSearchRoomPayment',
 });
