@@ -1,4 +1,7 @@
 exports.FilterType = Object.freeze({
+  ALLROOMS: 'allRooms',
+  ROOMNUMBER: 'roomNumber',
+  ALLINQUIRIES: 'allInquiries',
   INQUIRYBYOBJECTID: 'inquiryByObjectId',
   ADVANCESEARCHINQUIRY: 'advanceSearchInquiry',
   TRANSIENTPRIVATEROOMS: 'transientPrivateRooms',
@@ -7,6 +10,7 @@ exports.FilterType = Object.freeze({
   BEDSPACEROOMS: 'bedspaceRooms',
   BEDSPACEROOMBYOBJECTID: 'bedspaceRoomByObjectId',
   ADVANCESEARCHBEDSPACEROOMS: 'advanceSearchBedspaceRooms',
+  ALLTENANTS: 'allTenants',
   TENANTBYKEYSTROKE: 'tenantByKeyStroke',
   TENANTBYOBJECTID: 'tenantByObjectId',
   ADVANCESEARCHTENANT: 'advanceSearchTenant',
