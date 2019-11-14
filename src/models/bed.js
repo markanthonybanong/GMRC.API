@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const {DeckStatuses} = require('../core/enums/deckStatus');
+const mongooseAggregatePaginate = require('mongoose-aggregate-paginate');
+
 const bedSchema = new Schema({
   number: {
     type: Number,
@@ -22,6 +24,7 @@ const bedSchema = new Schema({
     tenant: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Tenant',
+      unique: true,
     },
     dueRentDate: {
       type: Number,
@@ -72,5 +75,5 @@ const bedSchema = new Schema({
     }],
   }],
 }, {timestamps: {createdAt: 'created_at'}});
-
+bedSchema.plugin(mongooseAggregatePaginate);
 module.exports = mongoose.model('Bed', bedSchema);

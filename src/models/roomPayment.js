@@ -75,19 +75,19 @@ const roomPaymentSchema = new Schema({
     trim: true,
   },
   roomTenants: [{
-    dueRentDates: [{
+    dueRentDate: {
       type: Number,
       trim: true,
-    }],
-    indexes: [{
+    },
+    index: {
       type: Number,
       trim: true,
-    }],
-    names: [{
+    },
+    name: {
       type: String,
       trim: true,
-    }],
-    rentStatuses: [{
+    },
+    rentStatus: {
       value: {
         type: String,
         trim: true,
@@ -96,11 +96,11 @@ const roomPaymentSchema = new Schema({
         type: Number,
         trim: true,
       },
-    }],
-    rents: [{
+    },
+    rent: {
       type: Number,
       trim: true,
-    }],
+    },
   }],
 }, {timestamps: {createdAt: 'created_at'}});
 roomPaymentSchema.index({

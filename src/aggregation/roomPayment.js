@@ -77,6 +77,15 @@ function aggregate(filter) {
         __v: 0,
       });
       break;
+    case FilterType.ROOMPAYMENTSINTHREEMONTHS:
+      aggregate.match({
+        $or: filter.roomPaymentFilter,
+      }).project({
+        created_at: 0,
+        updatedAt: 0,
+        __v: 0,
+      });
+      break;
   }
   return aggregate;
 }

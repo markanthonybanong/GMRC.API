@@ -45,18 +45,15 @@ const roomSchema = new Schema({
       trim: true,
     },
   }],
-  bedspaces: {
-    type: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Bed',
-    }],
-  },
-  tenants: {
-    type: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Tenant',
-    }],
-  },
+  bedspaces: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Bed',
+  }],
+  tenants: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tenant',
+    unique: true,
+  }],
 }, {timestamps: {createdAt: 'created_at'}});
 
 roomSchema.plugin(mongooseAggregatePaginate);

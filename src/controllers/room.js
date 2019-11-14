@@ -23,7 +23,6 @@ function addBedspaceObjectIdInRoom(roomObjectId, bedspaceObjectId) {
       },
   );
 };
-
 /**
  *
  * @param {*} roomObjectId will remove bedpaces object id in this room
@@ -215,7 +214,9 @@ exports.addTenantInTransientPrivateRoom = async (req, res) => {
   };
 
   Room.findByIdAndUpdate( conditions,
-      {$push: {tenants: tenantObjectId}},
+      {
+        $addToSet: {tenants: tenantObjectId},
+      },
       {
         new: true,
       },

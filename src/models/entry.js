@@ -56,5 +56,3 @@ const entrySchema = new Schema({
 
 entrySchema.plugin(mongooseAggregatePaginate);
 module.exports = mongoose.model('Entry', entrySchema);
-
-
