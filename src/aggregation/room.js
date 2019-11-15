@@ -44,17 +44,52 @@ function aggregate(filter) {
         ],
       }).lookup({
         from: 'tenants',
-        localField: 'tenants',
+        localField: 'transientPrivateRoomProperties.tenants',
         foreignField: '_id',
-        as: 'tenantsArr',
+        as: 'tenants',
+      }).project({
+        number: 1,
+        floor: 1,
+        type: 1,
+        aircon: 1,
+        tenants: 1,
+        TPRoompropertyStatus: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.status',
+          },
+        },
+        TPRoompropertyDueRentDate: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.dueRentDate',
+          },
+        },
+        TPRoompropertyMonthlyRent: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.monthlyRent',
+          },
+        },
+      }).project({
+        number: 1,
+        floor: 1,
+        type: 1,
+        aircon: 1,
+        transientPrivateRoomProperties: [{
+          status: {
+            $arrayElemAt: ['$TPRoompropertyStatus', 0],
+          },
+          dueRentDate: {
+            $arrayElemAt: ['$TPRoompropertyDueRentDate', 0],
+          },
+          monthlyRent: {
+            $arrayElemAt: ['$TPRoompropertyMonthlyRent', 0],
+          },
+          tenants: '$tenants',
+        }],
       }).sort({
         number: 1,
-      }).project({
-        tenants: 0,
-        bedspaces: 0,
-        created_at: 0,
-        updatedAt: 0,
-        __v: 0,
       });
       break;
     case FilterType.TRANSIENTPRIVATEROOMBYOBJECTID:
@@ -62,15 +97,50 @@ function aggregate(filter) {
         _id: objectId(filter.roomObjectId),
       }).lookup({
         from: 'tenants',
-        localField: 'tenants',
+        localField: 'transientPrivateRoomProperties.tenants',
         foreignField: '_id',
-        as: 'tenantsArr',
+        as: 'tenants',
       }).project({
-        tenants: 0,
-        bedspaces: 0,
-        created_at: 0,
-        updatedAt: 0,
-        __v: 0,
+        number: 1,
+        floor: 1,
+        type: 1,
+        aircon: 1,
+        tenants: 1,
+        TPRoompropertyStatus: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.status',
+          },
+        },
+        TPRoompropertyDueRentDate: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.dueRentDate',
+          },
+        },
+        TPRoompropertyMonthlyRent: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.monthlyRent',
+          },
+        },
+      }).project({
+        number: 1,
+        floor: 1,
+        type: 1,
+        aircon: 1,
+        transientPrivateRoomProperties: [{
+          status: {
+            $arrayElemAt: ['$TPRoompropertyStatus', 0],
+          },
+          dueRentDate: {
+            $arrayElemAt: ['$TPRoompropertyDueRentDate', 0],
+          },
+          monthlyRent: {
+            $arrayElemAt: ['$TPRoompropertyMonthlyRent', 0],
+          },
+          tenants: '$tenants',
+        }],
       });
       break;
     case FilterType.ADVANCESEARCHTRANSIENTPRIVATEROOMS:
@@ -83,11 +153,50 @@ function aggregate(filter) {
         $and: [filter.roomFilter],
       }).lookup({
         from: 'tenants',
-        localField: 'tenants',
+        localField: 'transientPrivateRoomProperties.tenants',
         foreignField: '_id',
-        as: 'tenantsList',
+        as: 'tenants',
       }).project({
-        tenants: 0,
+        number: 1,
+        floor: 1,
+        type: 1,
+        aircon: 1,
+        tenants: 1,
+        TPRoompropertyStatus: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.status',
+          },
+        },
+        TPRoompropertyDueRentDate: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.dueRentDate',
+          },
+        },
+        TPRoompropertyMonthlyRent: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.monthlyRent',
+          },
+        },
+      }).project({
+        number: 1,
+        floor: 1,
+        type: 1,
+        aircon: 1,
+        transientPrivateRoomProperties: [{
+          status: {
+            $arrayElemAt: ['$TPRoompropertyStatus', 0],
+          },
+          dueRentDate: {
+            $arrayElemAt: ['$TPRoompropertyDueRentDate', 0],
+          },
+          monthlyRent: {
+            $arrayElemAt: ['$TPRoompropertyMonthlyRent', 0],
+          },
+          tenants: '$tenants',
+        }],
       });
       break;
     case FilterType.BEDSPACEROOMS:

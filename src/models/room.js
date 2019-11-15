@@ -4,7 +4,7 @@ const {RoomTypes} = require('../core/enums/roomTypes');
 const {HasAircon} = require('../core/enums/hasAircon');
 const {RoomStatuses} = require('../core/enums/roomStatus');
 const mongooseAggregatePaginate = require('mongoose-aggregate-paginate');
-
+const uniqueArrayPlugin = require('mongoose-unique-array');
 const roomSchema = new Schema({
   number: {
     type: Number,
@@ -44,18 +44,19 @@ const roomSchema = new Schema({
       type: Number,
       trim: true,
     },
+    tenants: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Tenant',
+      unique: true,
+    }],
   }],
   bedspaces: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Bed',
   }],
-  tenants: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Tenant',
-    unique: true,
-  }],
 }, {timestamps: {createdAt: 'created_at'}});
 
+roomSchema.plugin(uniqueArrayPlugin);
 roomSchema.plugin(mongooseAggregatePaginate);
 module.exports = mongoose.model('Room', roomSchema);
 

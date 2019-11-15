@@ -24,7 +24,6 @@ const bedSchema = new Schema({
     tenant: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Tenant',
-      unique: true,
     },
     dueRentDate: {
       type: Number,

@@ -69,8 +69,30 @@ exports.create = async (req, res) => {
   });
 };
 exports.update = async (req, res) => {
-  Room.findByIdAndUpdate(req.body._id,
-      req.body,
+  const {
+    floor,
+    type,
+    aircon,
+    _id,
+    transientPrivateRoomProperties,
+  } = req.body;
+
+  Room.findByIdAndUpdate(_id,
+      {
+        $set: {
+          'floor': floor,
+          'type': type,
+          'aircon': aircon,
+          'transientPrivateRoomProperties.0.status': transientPrivateRoomProperties[0].status,
+          'transientPrivateRoomProperties.0.dueRentDate': transientPrivateRoomProperties[0].dueRentDate,
+          'transientPrivateRoomProperties.0.monthlyRent': transientPrivateRoomProperties[0].monthlyRent,
+        },
+        $addToSet: {
+          'transientPrivateRoomProperties.0.tenants': {
+            $each: transientPrivateRoomProperties[0].tenants,
+          }
+        }
+      },
       {new: true},
       (err, room) => {
         if (err) {
@@ -203,62 +225,6 @@ exports.getRooms = async (req, res) => {
             });
       });
 };
-exports.addTenantInTransientPrivateRoom = async (req, res) => {
-  const {
-    roomObjectId,
-    tenantObjectId,
-  } = req.body;
-
-  const conditions = {
-    _id: ObjectId(roomObjectId),
-  };
-
-  Room.findByIdAndUpdate( conditions,
-      {
-        $addToSet: {tenants: tenantObjectId},
-      },
-      {
-        new: true,
-      },
-      ( err, room) => {
-        if (err) {
-          res.status(httpStatusCode.BAD_REQUEST)
-              .send({
-                message: err,
-              });
-        } else {
-          res.status(httpStatusCode.OK)
-              .json(room);
-        }
-      });
-};
-exports.updateTenantInTransientPrivateRoom = async (req, res) => {
-  const {
-    oldTenantObjectId,
-    tenantObjectId,
-    roomObjectId,
-  } = req.body;
-  const conditions = {
-    _id: ObjectId(roomObjectId),
-    tenants: ObjectId(oldTenantObjectId),
-  };
-  Room.findOneAndUpdate( conditions,
-      {$set: {'tenants.$': tenantObjectId}},
-      {
-        new: true,
-      },
-      ( err, room) => {
-        if (err) {
-          res.status(httpStatusCode.BAD_REQUEST)
-              .send({
-                message: err,
-              });
-        } else {
-          res.status(httpStatusCode.OK)
-              .json(room);
-        }
-      });
-};
 exports.removeTenantInTransientPrivateRoom = async (req, res) => {
   const {
     tenantObjectId,
@@ -270,7 +236,7 @@ exports.removeTenantInTransientPrivateRoom = async (req, res) => {
   };
 
   Room.findByIdAndUpdate( conditions,
-      {$pull: {tenants: ObjectId(tenantObjectId)}},
+      {$pull: {'transientPrivateRoomProperties.0.tenants': ObjectId(tenantObjectId)}},
       {
         new: true,
       },

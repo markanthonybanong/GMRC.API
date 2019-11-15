@@ -62,5 +62,6 @@ const tenantSchema = new Schema({
   },
 }, {timestamps: {createdAt: 'created_at'}});
 
+tenantSchema.index({firstname: 1, middlename: 1, lastname: 1}, {unique: true});
 tenantSchema.plugin(mongooseAggregatePaginate);
 module.exports = mongoose.model('Tenant', tenantSchema);
