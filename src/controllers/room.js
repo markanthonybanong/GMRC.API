@@ -84,18 +84,40 @@ exports.update = async (req, res) => {
         }
       });
 };
+exports.createBed = async (req, res) => {
+  const {
+    roomObjectId,
+    number,
+  } = req.body;
+
+  const bedspace = new Bed({
+    room: roomObjectId,
+    number: number,
+  });
+
+  bedspace.save( (err, bedspace) => {
+    if (err) {
+      res.status(httpStatusCode.BAD_REQUEST)
+          .send({
+            message: err,
+          });
+    } else {
+      addBedspaceObjectIdInRoom(roomObjectId, bedspace._id);
+      res.status(httpStatusCode.OK)
+          .json(bedspace);
+    }
+  });
+},
 exports.createBedspace = async (req, res) => {
   const {
-    roomNumber,
     number,
     decks,
     roomObjectId,
   } = req.body;
 
   const bedspace = new Bed({
-    roomNumber: roomNumber,
+    room: roomObjectId,
     number: number,
-    decks: decks,
   });
 
   bedspace.save( (err, bedspace) => {
@@ -235,20 +257,19 @@ exports.addTenantInTransientPrivateRoom = async (req, res) => {
       });
 };
 exports.updateTenantInTransientPrivateRoom = async (req, res) => {
-  console.log(' the req body ', req.body);
   const {
     oldTenantObjectId,
     tenantObjectId,
     roomObjectId,
   } = req.body;
   const conditions = {
-    _id: ObjectId(roomObjectId),
-    tenants: oldTenantObjectId,
+    '_id': ObjectId(roomObjectId),
+    'transientPrivateRoomProperties.tenants': oldTenantObjectId,
   };
   Room.findOneAndUpdate( conditions,
       {
         $set: {
-          'tenants.$': tenantObjectId
+          'transientPrivateRoomProperties.0.tenants.$': tenantObjectId,
         }
       },
       {
