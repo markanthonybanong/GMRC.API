@@ -15,9 +15,15 @@ module.exports = () => {
 
   roomRoutes.put('/removeDeckInBedspace', roomController.removeDeckInBedspace);
 
-  roomRoutes.post('/page', roomController.getRooms);
+  roomRoutes.post('/addTenantInTransientPrivateRoom', roomController.addTenantInTransientPrivateRoom);
+
+  roomRoutes.put('/updateTenantInTransientPrivateRoom', roomController.updateTenantInTransientPrivateRoom);
 
   roomRoutes.put('/removeTenantInTransientPrivateRoom', roomController.removeTenantInTransientPrivateRoom);
+
+  roomRoutes.post('/getTransientPrivateRoomByTenantsObjectId', roomController.getTransientPrivateRoomByTenantsObjectId);
+
+  roomRoutes.post('/page', roomController.getRooms);
 
   return roomRoutes;
 };

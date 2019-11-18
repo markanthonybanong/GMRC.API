@@ -207,13 +207,6 @@ function aggregate(filter) {
         let: {bedspaces: '$bedspaces'},
         pipeline: [
           {
-            $match: {
-              $expr: {
-                $in: ['$_id', '$$bedspaces'],
-              },
-            },
-          },
-          {
             $lookup: {
               from: 'tenants',
               localField: 'decks.tenant',
@@ -316,13 +309,6 @@ function aggregate(filter) {
         from: 'beds',
         let: {bedspaces: '$bedspaces'},
         pipeline: [
-          {
-            $match: {
-              $expr: {
-                $in: ['$_id', '$$bedspaces'],
-              },
-            },
-          },
           {
             $lookup: {
               from: 'tenants',
@@ -427,13 +413,6 @@ function aggregate(filter) {
             from: 'beds',
             let: {bedspaces: '$bedspaces'},
             pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $in: ['$_id', '$$bedspaces'],
-                  },
-                },
-              },
               {
                 $lookup: {
                   from: 'tenants',
@@ -817,6 +796,133 @@ function aggregate(filter) {
             dueRent: false,
             __v: false,
           });
+      break;
+    case FilterType.ROOMSBYTENANTOBJECTID:
+      aggregate.match({
+        $or: [
+          {type: RoomTypes.TRANSIENT},
+          {type: RoomTypes.PRIVATE},
+          {type: RoomTypes.BEDSPACE},
+        ],
+      }).lookup({
+        from: 'beds',
+        localField: 'bedspaces',
+        foreignField: '_id',
+        as: 'bedspaces',
+      }).project({
+        number: 1,
+        floor: 1,
+        type: 1,
+        aircon: 1,
+        bedspaces: 1,
+        transientPrivateRoomProperties: 1,
+        getTenantsObjectIdInBedspaceRooms: {
+          $map: {
+            input: '$bedspaces',
+            as: 'bedspace',
+            in: {
+              $map: {
+                input: '$$bedspace.decks',
+                in: {
+                  $cond: {
+                    if: {
+                      $ne: ['$$this.away', null],
+                    },
+                    then: [
+                      '$$this.tenant',
+                      {$arrayElemAt: ['$$this.away.tenant', 0]},
+                    ],
+                    else: ['$$this.tenant'],
+                  },
+                },
+              },
+            },
+          },
+        },
+      }).unwind({
+        path: '$getTenantsObjectIdInBedspaceRooms',
+        preserveNullAndEmptyArrays: true,
+      }).unwind({
+        path: '$getTenantsObjectIdInBedspaceRooms',
+        preserveNullAndEmptyArrays: true,
+      }).unwind({
+        path: '$getTenantsObjectIdInBedspaceRooms',
+        preserveNullAndEmptyArrays: true,
+      }).group({
+        _id: '$_id',
+        bedspaces: {$first: '$bedspaces'},
+        number: {$first: '$number'},
+        floor: {$first: '$floor'},
+        type: {$first: '$type'},
+        aircon: {$first: '$aircon'},
+        transientPrivateRoomProperties: {$first: '$transientPrivateRoomProperties'},
+        tenantsObjectIdInBedspaceRooms: {
+          $push: '$getTenantsObjectIdInBedspaceRooms',
+        },
+      }).project({
+        bedspaces: 1,
+        number: 1,
+        floor: 1,
+        type: 1,
+        aircon: 1,
+        bedspaceRoomsTenantsObjectId: 1,
+        transientPrivateRoomProperties: 1,
+        isTenantObjectIdFoundInBedspaceRooms: {
+          $in: [objectId(filter.tenantObjectId), '$tenantsObjectIdInBedspaceRooms'],
+        },
+        tenantsObjectIdInTransientPrivateRoom: {
+          $arrayElemAt: ['$transientPrivateRoomProperties.tenants', 0],
+        },
+      }).unwind({
+        path: '$tenantsObjectIdInTransientPrivateRoom',
+        preserveNullAndEmptyArrays: true,
+      }).group({
+        _id: '$_id',
+        bedspaces: {$first: '$bedspaces'},
+        number: {$first: '$number'},
+        floor: {$first: '$floor'},
+        type: {$first: '$type'},
+        aircon: {$first: '$aircon'},
+        isTenantObjectIdFoundInBedspaceRooms: {$first: '$isTenantObjectIdFoundInBedspaceRooms'},
+        transientPrivateRoomProperties: {$push: '$transientPrivateRoomProperties'},
+        tenantsObjectIdInTransientPrivateRooms: {
+          $push: '$tenantsObjectIdInTransientPrivateRoom',
+        },
+      }).project({
+        bedspaces: 1,
+        number: 1,
+        floor: 1,
+        type: 1,
+        aircon: 1,
+        transientPrivateRoomProperties: 1,
+        isTenantObjectIdFoundInBedspaceRooms: 1,
+        isTenantObjectIdFoundInTransientPrivateRooms: {
+          $in: [objectId(filter.tenantObjectId), '$tenantsObjectIdInTransientPrivateRooms'],
+        },
+      }).project({
+        bedspaces: 1,
+        number: 1,
+        floor: 1,
+        type: 1,
+        aircon: 1,
+        transientPrivateRoomProperties: 1,
+        displayRoom: {
+          $cond: {
+            if: {
+              $or: [
+                {$eq: ['$isTenantObjectIdFoundInBedspaceRooms', true]},
+                {$eq: ['$isTenantObjectIdFoundInTransientPrivateRooms', true]},
+              ],
+            },
+            then: true,
+            else: false,
+          },
+        },
+      }).match({
+        displayRoom: true,
+      }).project({
+        displayRoom: 0,
+      });
       break;
   }
   return aggregate;

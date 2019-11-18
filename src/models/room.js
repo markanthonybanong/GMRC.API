@@ -47,7 +47,6 @@ const roomSchema = new Schema({
     tenants: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Tenant',
-      unique: true,
     }],
   }],
   bedspaces: [{

@@ -9,7 +9,7 @@ exports.FilterType = Object.freeze({
   ADVANCESEARCHTRANSIENTPRIVATEROOMS: 'advanceSearchTransientPrivateRooms',
   BEDSPACEROOMS: 'bedspaceRooms',
   BEDSPACEROOMBYOBJECTID: 'bedspaceRoomByObjectId',
-  BEDBYOBJECTID: 'bedByObjectId',
+  ROOMSBYTENANTOBJECTID: 'roomsByTenantObjectId',
   ADVANCESEARCHBEDSPACEROOMS: 'advanceSearchBedspaceRooms',
   ALLTENANTS: 'allTenants',
   TENANTBYKEYSTROKE: 'tenantByKeyStroke',
