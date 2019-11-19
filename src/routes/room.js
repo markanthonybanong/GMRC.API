@@ -7,7 +7,7 @@ module.exports = () => {
 
   roomRoutes.put('/updateRoom', roomController.update);
 
-  roomRoutes.put('/createBed', roomController.createBed);
+  roomRoutes.post('/createBed', roomController.createBed);
 
   roomRoutes.post('/createBedspace', roomController.createBedspace);
 

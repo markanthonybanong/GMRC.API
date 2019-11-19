@@ -89,7 +89,7 @@ exports.createBed = async (req, res) => {
     roomObjectId,
     number,
   } = req.body;
-
+ 
   const bedspace = new Bed({
     room: roomObjectId,
     number: number,
