@@ -108,45 +108,65 @@ exports.createBed = async (req, res) => {
     }
   });
 },
-exports.createBedspace = async (req, res) => {
-  const {
-    number,
-    decks,
-    roomObjectId,
-  } = req.body;
-
-  const bedspace = new Bed({
-    room: roomObjectId,
-    number: number,
-  });
-
-  bedspace.save( (err, bedspace) => {
-    if (err) {
-      res.status(httpStatusCode.BAD_REQUEST)
-          .send({
-            message: err,
-          });
-    } else {
-      addBedspaceObjectIdInRoom(roomObjectId, bedspace._id);
-      res.status(httpStatusCode.OK)
-          .json(bedspace);
-    }
-  });
-};
-exports.updateBedspace = async (req, res) => {
+exports.createDeckInBed = async (req, res) => { 
   const {
     _id,
-    number,
-    decks,
-    roomNumber,
-    roomObjectId,
+    decks
   } = req.body;
 
-  Bed.findByIdAndUpdate(_id,
+  const conditions = {
+    '_id': ObjectId(_id),
+  };
+  Bed.findOneAndUpdate( conditions,
       {
-        roomNumber: roomNumber,
-        number: number,
-        decks: decks,
+        $push: {
+          decks: {
+            dueRentDate: decks[0].dueRentDate,
+            monthlyRent: decks[0].monthlyRent,
+            number: decks[0].number,
+            status: decks[0].status,
+            tenant: decks[0].tenantObjectId,
+            away: null,
+          }
+        }
+      },
+      {
+        new: true,
+      },
+      ( err, bed) => {
+        if (err) {
+          res.status(httpStatusCode.BAD_REQUEST)
+              .send({
+                message: err,
+              });
+        } else {
+          res.status(httpStatusCode.OK)
+              .json(bed);
+        }
+      });
+};
+exports.updateDeckInBed = async (req, res) => {
+  console.log('req. body ',req.body);
+  const {
+    _id,
+    decks,
+  } = req.body;
+  const deck = decks[0];
+  const condition = {
+    '_id': ObjectId(_id),
+    'decks._id': ObjectId(deck._id),
+  };
+
+  Bed.findOneAndUpdate(condition,
+      {
+        $set: {
+          'decks.$.dueRentDate': deck.dueRentDate,
+          'decks.$.monthlyRent': deck.monthlyRent,
+          'decks.$.number': deck.number,
+          'decks.$.status': deck.status,
+          'decks.$.tenant': deck.tenantObjectId,
+          'decks.$.away': deck.away,
+        }
       },
       {new: true},
       (err, bedspace) => {
@@ -156,7 +176,47 @@ exports.updateBedspace = async (req, res) => {
                 message: err,
               });
         } else {
-          addBedspaceObjectIdInRoom(roomObjectId, _id);
+          res.status(httpStatusCode.OK)
+              .json(bedspace);
+        }
+      },
+  );
+};
+exports.addUpdateAwayInDeck = async (req, res) => {
+  console.log('req bodyxxx ', req.body);
+  const {
+    _id,
+    deckObjectId,
+    away
+  } = req.body;
+  const condition = {
+    '_id': ObjectId(_id),
+    'decks._id': ObjectId(deckObjectId),
+  };
+  Bed.findOneAndUpdate(condition,
+      {
+        $set: {
+          'decks.$.away': [{
+            willReturnIn: away[0].willReturnIn,
+            status: away[0].status,
+            inDate: away[0].inDate,
+            inTime: away[0].inTime,
+            outDate: away[0].outDate,
+            outTime: away[0].outTime,
+            dueRentDate: away[0].dueRentDate,
+            rent: away[0].rent,
+            tenant: away[0].tenantObjectId,
+          }]
+        },
+      },
+      {new: true},
+      (err, bedspace) => {
+        if (err) {
+          res.status(httpStatusCode.BAD_REQUEST)
+              .send({
+                message: err,
+              });
+        } else {
           res.status(httpStatusCode.OK)
               .json(bedspace);
         }

@@ -9,9 +9,11 @@ module.exports = () => {
 
   roomRoutes.post('/createBed', roomController.createBed);
 
-  roomRoutes.post('/createBedspace', roomController.createBedspace);
+  roomRoutes.post('/createDeckInBed', roomController.createDeckInBed);
 
-  roomRoutes.put('/updateBedspace', roomController.updateBedspace);
+  roomRoutes.put('/updateDeckInBed', roomController.updateDeckInBed);
+
+  roomRoutes.put('/addUpdateAwayInDeck', roomController.addUpdateAwayInDeck);
 
   roomRoutes.put('/removeBedspace', roomController.removeBedspace);
 
