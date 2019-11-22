@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 const RoomPayment = require('../models/roomPayment');
 const {FilterType} = require('../core/enums/filterType');
-const paymentController = require('../controllers/payment');
 const mongoose = require('mongoose');
 const objectId = mongoose.Types.ObjectId;
 /**
@@ -15,6 +14,7 @@ function aggregate(filter) {
     case FilterType.ALLROOMPAYMENTS:
       aggregate.sort({
         roomNumber: 1,
+        date: 1,
       }).project({
         created_at: 0,
         updatedAt: 0,
@@ -77,9 +77,12 @@ function aggregate(filter) {
         __v: 0,
       });
       break;
-    case FilterType.ROOMPAYMENTSINTHREEMONTHS:
+    case FilterType.ROOMPAYMENTSINFOURMONTHS:
       aggregate.match({
         $or: filter.roomPaymentFilter,
+      }).sort({
+        roomNumber: 1,
+        date: 1,
       }).project({
         created_at: 0,
         updatedAt: 0,

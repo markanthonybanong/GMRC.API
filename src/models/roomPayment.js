@@ -45,6 +45,16 @@ const roomPaymentSchema = new Schema({
     trim: true,
     required: true,
   },
+  total: {
+    type: Number,
+    trim: true,
+    required: true,
+  },
+  totalAmountElectricBill: {
+    type: Number,
+    trim: true,
+    required: true,
+  },
   riceCookerBillBalance: [{
     balance: {
       type: Number,
@@ -56,6 +66,11 @@ const roomPaymentSchema = new Schema({
     enum: Object.values(PaymentStatus),
     required: true,
     trim: true,
+  },
+  riceCookerBill: {
+    type: Number,
+    trim: true,
+    required: true,
   },
   roomNumber: {
     type: Number,
@@ -73,6 +88,11 @@ const roomPaymentSchema = new Schema({
     enum: Object.values(PaymentStatus),
     required: true,
     trim: true,
+  },
+  waterBill: {
+    type: Number,
+    trim: true,
+    required: true,
   },
   roomTenants: [{
     dueRentDate: {

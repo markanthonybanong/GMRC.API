@@ -89,7 +89,7 @@ exports.createBed = async (req, res) => {
     roomObjectId,
     number,
   } = req.body;
- 
+
   const bedspace = new Bed({
     room: roomObjectId,
     number: number,
@@ -146,7 +146,6 @@ exports.createDeckInBed = async (req, res) => {
       });
 };
 exports.updateDeckInBed = async (req, res) => {
-  console.log('req. body ',req.body);
   const {
     _id,
     decks,
@@ -183,7 +182,6 @@ exports.updateDeckInBed = async (req, res) => {
   );
 };
 exports.addUpdateAwayInDeck = async (req, res) => {
-  console.log('req bodyxxx ', req.body);
   const {
     _id,
     deckObjectId,

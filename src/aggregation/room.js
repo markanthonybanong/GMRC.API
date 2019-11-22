@@ -18,6 +18,7 @@ function aggregate(filter) {
           {type: RoomTypes.TRANSIENT},
           {type: RoomTypes.PRIVATE},
           {type: RoomTypes.BEDSPACE},
+          {type: RoomTypes.SEMIPRIVATE},
         ],
       }).sort({
         number: 1,
@@ -41,6 +42,7 @@ function aggregate(filter) {
         $or: [
           {type: RoomTypes.TRANSIENT},
           {type: RoomTypes.PRIVATE},
+          {type: RoomTypes.SEMIPRIVATE},
         ],
       }).lookup({
         from: 'tenants',
