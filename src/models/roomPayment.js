@@ -94,6 +94,11 @@ const roomPaymentSchema = new Schema({
     trim: true,
     required: true,
   },
+  roomType: {
+    type: String,
+    trim: true,
+    required: true,
+  },
   roomTenants: [{
     dueRentDate: {
       type: Number,

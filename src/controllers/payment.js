@@ -147,6 +147,7 @@ exports.createRoomPayment = async (req, res) => {
     waterBillStatus,
     waterBill,
     roomTenants,
+    roomType,
   } = req.body;
 
   const roomPayment = new RoomPayment({
@@ -167,6 +168,7 @@ exports.createRoomPayment = async (req, res) => {
     waterBillBalance: waterBillBalance,
     waterBillStatus: waterBillStatus,
     waterBill: waterBill,
+    roomType: roomType,
     roomTenants: roomTenants,
   });
 
@@ -224,6 +226,7 @@ exports.updateRoomPayment = async (req, res) => {
     waterBillStatus,
     waterBill,
     roomTenants,
+    roomType,
   } = req.body;
   const {id: roomPaymentId} = req.params;
   RoomPayment.findByIdAndUpdate(roomPaymentId,
@@ -245,6 +248,7 @@ exports.updateRoomPayment = async (req, res) => {
         waterBillBalance: waterBillBalance,
         waterBillStatus: waterBillStatus,
         waterBill: waterBill,
+        roomType: roomType,
         roomTenants: roomTenants,
       },
       {new: true},
