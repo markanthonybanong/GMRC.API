@@ -9,6 +9,7 @@ exports.FilterType = Object.freeze({
   ADVANCESEARCHTRANSIENTPRIVATEROOMS: 'advanceSearchTransientPrivateRooms',
   BEDSPACEROOMS: 'bedspaceRooms',
   BEDSPACEROOMBYOBJECTID: 'bedspaceRoomByObjectId',
+  ROOMSBYTENANTOBJECTID: 'roomsByTenantObjectId',
   ADVANCESEARCHBEDSPACEROOMS: 'advanceSearchBedspaceRooms',
   ALLTENANTS: 'allTenants',
   TENANTBYKEYSTROKE: 'tenantByKeyStroke',
@@ -20,4 +21,8 @@ exports.FilterType = Object.freeze({
   ALLROOMPAYMENTS: 'allRoomPayments',
   ROOMPAYMENTBYOBJECTID: 'roomPaymentByObjectId',
   ADVANCESEARCHROOMPAYMENT: 'advanceSearchRoomPayment',
+  ROOMPAYMENTSINFOURMONTHS: 'roomPaymentsInFourMonths',
+  ALLUNSETTLEBILLS: 'allUnsettleBills',
+  UNSETTLEBILLBYOBJECTID: 'unsettleBillByObjectId',
+  ADVANCESEARCHUNSETTLEBILL: 'advanceSearchUnsettleBill',
 });

@@ -12,7 +12,6 @@ const tenantSchema = new Schema({
   },
   middlename: {
     type: String,
-    required: true,
     trim: true,
   },
   lastname: {
@@ -30,7 +29,6 @@ const tenantSchema = new Schema({
   },
   age: {
     type: Number,
-    required: true,
     trim: true,
   },
   gender: {
@@ -47,20 +45,18 @@ const tenantSchema = new Schema({
   },
   contactNumber: {
     type: Number,
-    required: true,
     trim: true,
   },
   emergencyContactNumber: {
     type: Number,
-    required: true,
     trim: true,
   },
   address: {
     type: String,
-    required: true,
     trim: true,
   },
 }, {timestamps: {createdAt: 'created_at'}});
 
+tenantSchema.index({firstname: 1, middlename: 1, lastname: 1}, {unique: true});
 tenantSchema.plugin(mongooseAggregatePaginate);
 module.exports = mongoose.model('Tenant', tenantSchema);

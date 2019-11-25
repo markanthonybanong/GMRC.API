@@ -12,7 +12,8 @@ module.exports = () => {
 
   paymentRoutes.post('/roomPayment/page', paymentController.getRoomPayments);
 
-  paymentRoutes.put('/updateRoomPayment/:id', paymentController.updateRoomPayment);
+  paymentRoutes.put('/updateRoomPayment/:id', paymentController.
+      updateRoomPayment);
 
   return paymentRoutes;
 };
