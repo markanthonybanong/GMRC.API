@@ -495,6 +495,7 @@ exports.updateUnsettleBill = async (req, res) => {
     riceCookerBillBalance,
     _id
   } = req.body;
+
   UnsettleBill.findByIdAndUpdate(ObjectId(_id),
       {
         roomNumber: roomNumber,
