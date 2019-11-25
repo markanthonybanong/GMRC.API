@@ -4,9 +4,11 @@
 const httpStatusCode = require('http-status-codes');
 const Room = require('../models/room');
 const Bed = require('../models/bed');
+const UnsettleBill = require('../models/unsettleBill');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const roomAggregate = require('../aggregation/room');
+const unsettleBillAggregate = require('../aggregation/unsettleBill');
 
 
 /**
@@ -393,4 +395,145 @@ exports.getTransientPrivateRoomByTenantsObjectId = async (req, res) => {
         }
       }
   );
+};
+exports.createUnsettleBill = async (req, res) => {
+  const {
+    roomNumber,
+    roomType,
+    tenantsObjectId,
+    dueDate,
+    dateExit,
+    rentBalance,
+    electricBillBalance,
+    waterBillBalance,
+    riceCookerBillBalance,
+  } = req.body;
+
+  const unsettleBill = new UnsettleBill({
+    roomNumber: roomNumber,
+    roomType: roomType,
+    tenants: tenantsObjectId,
+    dueDate: dueDate,
+    dateExit: dateExit,
+    rentBalance: rentBalance,
+    electricBillBalance: electricBillBalance,
+    waterBillBalance: waterBillBalance,
+    riceCookerBillBalance: riceCookerBillBalance,
+  });
+
+  unsettleBill.save( (err, unsettleBill)=> {
+    if (err) {
+      res.status(httpStatusCode.BAD_REQUEST)
+          .send({
+            message: err,
+          });
+    } else {
+      res.status(httpStatusCode.OK)
+          .json(unsettleBill);
+    }
+  });
+};
+exports.getUnsettleBills = async (req, res) => {
+  const options = {
+    page: req.body.page,
+    limit: req.body.limit,
+  };
+
+  UnsettleBill.aggregatePaginate(unsettleBillAggregate(req.body.filters), options)
+      .then( (unsettleBills) => {
+        res.status(httpStatusCode.OK)
+            .send({
+              data: unsettleBills.data,
+              pageCount: unsettleBills.pageCount,
+              totalCount: unsettleBills.totalCount,
+            });
+      })
+      .catch((err) => {
+        res.status(httpStatusCode.BAD_REQUEST)
+            .send({
+              message: err,
+            });
+      });
+};
+exports.removeTenantInUnsettleBill = async (req, res) => {
+  const {
+    tenantObjectId,
+    unsettleBillObjectId,
+  } = req.body;
+
+  const conditions = {
+    _id: ObjectId(unsettleBillObjectId),
+  };
+
+  UnsettleBill.findByIdAndUpdate( conditions,
+      {$pull: {'tenants': ObjectId(tenantObjectId)}},
+      {
+        new: true,
+      },
+      ( err, unsettleBill) => {
+        if (err) {
+          res.status(httpStatusCode.BAD_REQUEST)
+              .send({
+                message: err,
+              });
+        } else {
+          res.status(httpStatusCode.OK)
+              .json(unsettleBill);
+        }
+      });
+};
+exports.updateUnsettleBill = async (req, res) => {
+  const {
+    roomNumber,
+    roomType,
+    tenantsObjectId,
+    dueDate,
+    dateExit,
+    rentBalance,
+    electricBillBalance,
+    waterBillBalance,
+    riceCookerBillBalance,
+    _id
+  } = req.body;
+  UnsettleBill.findByIdAndUpdate(ObjectId(_id),
+      {
+        roomNumber: roomNumber,
+        roomType: roomType,
+        tenants: tenantsObjectId,
+        dueDate: dueDate,
+        dateExit: dateExit,
+        rentBalance: rentBalance,
+        electricBillBalance: electricBillBalance,
+        waterBillBalance: waterBillBalance,
+        riceCookerBillBalance: riceCookerBillBalance,
+      },
+      {new: true},
+      (err, unsettleBill) => {
+        if (err) {
+          res.status(httpStatusCode.BAD_REQUEST)
+              .send({
+                message: err,
+              });
+        } else {
+          res.status(httpStatusCode.OK)
+              .json(unsettleBill);
+        }
+      });
+};
+exports.removeUnsettleBill = async (req, res) => {
+  const unsettleBillObjectId = ObjectId(req.params.id);
+  UnsettleBill.findByIdAndRemove(
+      unsettleBillObjectId,
+      {},
+      (err, unsettleBill) => {
+        if (err) {
+          res.status(httpStatusCode.BAD_REQUEST)
+              .send({
+                message: err,
+              });
+        } else {
+          res.status(httpStatusCode.OK)
+              .json(unsettleBill);
+        }
+      });
 };

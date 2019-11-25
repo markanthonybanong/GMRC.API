@@ -29,5 +29,15 @@ module.exports = () => {
 
   roomRoutes.post('/page', roomController.getRooms);
 
+  roomRoutes.post('/unsettle-bill', roomController.createUnsettleBill);
+
+  roomRoutes.put('/unsettle-bill', roomController.updateUnsettleBill);
+
+  roomRoutes.post('/unsettle-bill/page', roomController.getUnsettleBills);
+
+  roomRoutes.put('/removeTenantInUnsettleBill', roomController.removeTenantInUnsettleBill);
+
+  roomRoutes.delete('/removeUnsettleBill/:id', roomController.removeUnsettleBill);
+  
   return roomRoutes;
 };

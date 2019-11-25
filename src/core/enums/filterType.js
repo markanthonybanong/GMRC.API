@@ -22,4 +22,6 @@ exports.FilterType = Object.freeze({
   ROOMPAYMENTBYOBJECTID: 'roomPaymentByObjectId',
   ADVANCESEARCHROOMPAYMENT: 'advanceSearchRoomPayment',
   ROOMPAYMENTSINFOURMONTHS: 'roomPaymentsInFourMonths',
+  ALLUNSETTLEBILLS: 'allUnsettleBills',
+  UNSETTLEBILLBYOBJECTID: 'unsettleBillByObjectId',
 });
