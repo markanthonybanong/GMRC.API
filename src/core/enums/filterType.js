@@ -25,4 +25,7 @@ exports.FilterType = Object.freeze({
   ALLUNSETTLEBILLS: 'allUnsettleBills',
   UNSETTLEBILLBYOBJECTID: 'unsettleBillByObjectId',
   ADVANCESEARCHUNSETTLEBILL: 'advanceSearchUnsettleBill',
+  ALLPENALTIES: 'allPenalties',
+  PENALTYBYOBJECTID: 'penaltyByObjectId',
+  ADVANCESEARCHPENALTY: 'advanceSearchPenalty',
 });

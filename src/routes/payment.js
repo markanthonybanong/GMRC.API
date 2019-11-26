@@ -15,5 +15,13 @@ module.exports = () => {
   paymentRoutes.put('/updateRoomPayment/:id', paymentController.
       updateRoomPayment);
 
+  paymentRoutes.post('/createPenalty', paymentController.createPenalty);
+
+  paymentRoutes.put('/updatePenalty', paymentController.updatePenalty);
+
+  paymentRoutes.post('/penalty/page', paymentController.getPenalties);
+
+  paymentRoutes.delete('/removePenalty/:id', paymentController.removePenalty);
+  
   return paymentRoutes;
 };

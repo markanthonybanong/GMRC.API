@@ -42,7 +42,6 @@ function aggregate(filter) {
       });
       break;
     case FilterType.ADVANCESEARCHUNSETTLEBILL:
-      console.log('the filter ', filter);
       aggregate.project({
         tenants: 1,
         roomNumber: 1,
