@@ -28,6 +28,7 @@ exports.setValueForEntrySearchFilter = function(searchFilter) {
   });
   return modifiedFilter;
 };
+
 exports.setValueForPenaltySearchFilter = function( searchFilter) {
   const modifiedFilter = {};
   Object.entries(searchFilter).forEach( (element) => {
@@ -45,6 +46,7 @@ exports.setValueForPenaltySearchFilter = function( searchFilter) {
   });
   return modifiedFilter;
 };
+
 exports.createEntry = async (req, res) => {
   const {
     roomNumber,
@@ -284,6 +286,7 @@ exports.updateRoomPayment = async (req, res) => {
       }
   );
 };
+
 exports.createPenalty = async (req, res) => {
   const {
     roomNumber,
@@ -384,3 +387,4 @@ exports.removePenalty = async (req, res) => {
         }
       });
 };
+

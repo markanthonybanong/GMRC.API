@@ -22,6 +22,6 @@ module.exports = () => {
   paymentRoutes.post('/penalty/page', paymentController.getPenalties);
 
   paymentRoutes.delete('/removePenalty/:id', paymentController.removePenalty);
-
+  
   return paymentRoutes;
 };
