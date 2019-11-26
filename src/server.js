@@ -19,7 +19,6 @@ if (process.env.NODE_ENV === 'development') {
 
 const port = process.env.PORT;
 const logDirectory = path.join(__dirname, logPath);
-
 // if directory does not exist make directory
 if (!fs.existsSync(logDirectory)) {
   fs.mkdirSync(logDirectory);

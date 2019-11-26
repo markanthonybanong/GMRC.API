@@ -3,8 +3,10 @@ const Inquiry = require('../models/inquiry');
 const inquiryAggregate = require('../aggregation/inquiry');
 const mongoose = require('mongoose');
 const objectId = mongoose.Types.ObjectId;
-const moment = require('moment');
-
+/*
+  willOccupyIn - object key that have date value.
+               - wrap value to new Date so mongo match aggregation can read.
+*/
 exports.setValueForWillOccupyInKey = function(searchFilter) {
   const modifiedFilter = {};
   Object.entries(searchFilter).forEach( (element) => {
@@ -25,7 +27,8 @@ exports.create = async (req, res) => {
     willOccupyIn,
     gender,
     roomType,
-    deckNumbers,
+    status,
+    bedInfos,
   } = req.body;
 
   const inquiry = new Inquiry({
@@ -36,7 +39,8 @@ exports.create = async (req, res) => {
     phoneNumber: phoneNumber,
     gender: gender,
     roomType: roomType,
-    deckNumbers: deckNumbers,
+    status: status,
+    bedInfos: bedInfos,
   });
   inquiry.save( (err, inquiry) => {
     if (err) {
@@ -92,6 +96,7 @@ exports.getInquiries = async (req, res) => {
     page: req.body.page,
     limit: req.body.limit,
   };
+
   Inquiry.aggregatePaginate(inquiryAggregate(req.body.filters), options)
       .then( (inquiries) => {
         res.status(httpStatusCode.OK)
