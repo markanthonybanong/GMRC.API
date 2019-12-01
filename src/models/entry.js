@@ -52,6 +52,16 @@ const entrySchema = new Schema({
       trim: true,
     },
   }],
+  partialPayments: [{
+    date: {
+      type: Date,
+      trim: true,
+    },
+    amount: {
+      type: Number,
+      trim: true,
+    },
+  }],
 }, {timestamps: {createdAt: 'created_at'}});
 
 entrySchema.plugin(mongooseAggregatePaginate);

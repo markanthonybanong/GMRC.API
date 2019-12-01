@@ -55,22 +55,9 @@ const roomPaymentSchema = new Schema({
     trim: true,
     required: true,
   },
-  riceCookerBillBalance: [{
-    balance: {
-      type: Number,
-      trim: true,
-    },
-  }],
-  riceCookerBillStatus: {
+  electricBillInterest: {
     type: String,
-    enum: Object.values(PaymentStatus),
-    required: true,
     trim: true,
-  },
-  riceCookerBill: {
-    type: Number,
-    trim: true,
-    required: true,
   },
   roomNumber: {
     type: Number,
@@ -92,7 +79,10 @@ const roomPaymentSchema = new Schema({
   waterBill: {
     type: Number,
     trim: true,
-    required: true,
+  },
+  waterBillInterest: {
+    type: String,
+    trim: true,
   },
   roomType: {
     type: String,
@@ -125,6 +115,28 @@ const roomPaymentSchema = new Schema({
     rent: {
       type: Number,
       trim: true,
+    },
+    rentInterestAdded: {
+      type: String,
+      trim: true,
+    },
+    riceCookerBill: {
+      type: Number,
+      trim: true,
+    },
+    riceCookerBillInterestAdded: {
+      type: String,
+      trim: true,
+    },
+    riceCookerBillStatus: {
+      value: {
+        type: String,
+        trim: true,
+      },
+      balance: {
+        type: Number,
+        trim: true,
+      },
     },
   }],
 }, {timestamps: {createdAt: 'created_at'}});

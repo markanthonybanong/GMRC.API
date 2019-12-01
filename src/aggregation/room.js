@@ -73,6 +73,12 @@ function aggregate(filter) {
             in: '$$this.monthlyRent',
           },
         },
+        TPRoompropertyRiceCookerBill: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.riceCookerBill',
+          },
+        },
       }).project({
         number: 1,
         floor: 1,
@@ -87,6 +93,9 @@ function aggregate(filter) {
           },
           monthlyRent: {
             $arrayElemAt: ['$TPRoompropertyMonthlyRent', 0],
+          },
+          riceCookerBill: {
+            $arrayElemAt: ['$TPRoompropertyRiceCookerBill', 0],
           },
           tenants: '$tenants',
         }],
@@ -126,6 +135,12 @@ function aggregate(filter) {
             in: '$$this.monthlyRent',
           },
         },
+        TPRoompropertyRiceCookerBill: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.riceCookerBill',
+          },
+        },
       }).project({
         number: 1,
         floor: 1,
@@ -140,6 +155,9 @@ function aggregate(filter) {
           },
           monthlyRent: {
             $arrayElemAt: ['$TPRoompropertyMonthlyRent', 0],
+          },
+          riceCookerBill: {
+            $arrayElemAt: ['$TPRoompropertyRiceCookerBill', 0],
           },
           tenants: '$tenants',
         }],
@@ -182,6 +200,12 @@ function aggregate(filter) {
             in: '$$this.monthlyRent',
           },
         },
+        TPRoompropertyRiceCookerBill: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.riceCookerBill',
+          },
+        },
       }).project({
         number: 1,
         floor: 1,
@@ -196,6 +220,9 @@ function aggregate(filter) {
           },
           monthlyRent: {
             $arrayElemAt: ['$TPRoompropertyMonthlyRent', 0],
+          },
+          riceCookerBill: {
+            $arrayElemAt: ['$TPRoompropertyRiceCookerBill', 0],
           },
           tenants: '$tenants',
         }],

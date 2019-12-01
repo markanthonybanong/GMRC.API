@@ -43,6 +43,10 @@ const roomSchema = new Schema({
       type: Number,
       trim: true,
     },
+    riceCookerBill: {
+      type: Number,
+      trim: true,
+    },
     tenants: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Tenant',

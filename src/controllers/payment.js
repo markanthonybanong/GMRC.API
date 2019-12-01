@@ -59,6 +59,7 @@ exports.createEntry = async (req, res) => {
     oneMonthDepositBalance,
     oneMonthAdvance,
     oneMonthAdvanceBalance,
+    partialPayments,
   } = req.body;
 
   const entry = new Entry({
@@ -72,6 +73,7 @@ exports.createEntry = async (req, res) => {
     oneMonthDepositBalance: oneMonthDepositBalance,
     oneMonthAdvance: oneMonthAdvance,
     oneMonthAdvanceBalance: oneMonthAdvanceBalance,
+    partialPayments: partialPayments,
   });
 
   entry.save( (err, entry)=> {
@@ -119,6 +121,7 @@ exports.updateEntry = async (req, res) => {
     oneMonthDepositBalance,
     roomNumber,
     tenantObjectId,
+    partialPayments,
   } = req.body;
   const {id: entryId} = req.params;
   Entry.findByIdAndUpdate(entryId,
@@ -133,6 +136,7 @@ exports.updateEntry = async (req, res) => {
         oneMonthDepositBalance: oneMonthDepositBalance,
         roomNumber: roomNumber,
         tenant: tenantObjectId,
+        partialPayments: partialPayments,
       },
       {new: true},
       (err, entry) => {
@@ -169,6 +173,8 @@ exports.createRoomPayment = async (req, res) => {
     waterBill,
     roomTenants,
     roomType,
+    electricBillInterest,
+    waterBillInterest,
   } = req.body;
 
   const roomPayment = new RoomPayment({
@@ -191,6 +197,8 @@ exports.createRoomPayment = async (req, res) => {
     waterBill: waterBill,
     roomType: roomType,
     roomTenants: roomTenants,
+    electricBillInterest: electricBillInterest,
+    waterBillInterest: waterBillInterest,
   });
 
   roomPayment.save( (err, entry)=> {
@@ -248,6 +256,8 @@ exports.updateRoomPayment = async (req, res) => {
     waterBill,
     roomTenants,
     roomType,
+    electricBillInterest,
+    waterBillInterest,
   } = req.body;
   const {id: roomPaymentId} = req.params;
   RoomPayment.findByIdAndUpdate(roomPaymentId,
@@ -271,6 +281,8 @@ exports.updateRoomPayment = async (req, res) => {
         waterBill: waterBill,
         roomType: roomType,
         roomTenants: roomTenants,
+        electricBillInterest: electricBillInterest,
+        waterBillInterest: waterBillInterest,
       },
       {new: true},
       (err, roomPayment) => {
