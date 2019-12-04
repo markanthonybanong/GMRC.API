@@ -73,6 +73,12 @@ function aggregate(filter) {
             in: '$$this.monthlyRent',
           },
         },
+        TPRoompropertyRiceCookerBill: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.riceCookerBill',
+          },
+        },
       }).project({
         number: 1,
         floor: 1,
@@ -87,6 +93,9 @@ function aggregate(filter) {
           },
           monthlyRent: {
             $arrayElemAt: ['$TPRoompropertyMonthlyRent', 0],
+          },
+          riceCookerBill: {
+            $arrayElemAt: ['$TPRoompropertyRiceCookerBill', 0],
           },
           tenants: '$tenants',
         }],
@@ -126,6 +135,12 @@ function aggregate(filter) {
             in: '$$this.monthlyRent',
           },
         },
+        TPRoompropertyRiceCookerBill: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.riceCookerBill',
+          },
+        },
       }).project({
         number: 1,
         floor: 1,
@@ -140,6 +155,9 @@ function aggregate(filter) {
           },
           monthlyRent: {
             $arrayElemAt: ['$TPRoompropertyMonthlyRent', 0],
+          },
+          riceCookerBill: {
+            $arrayElemAt: ['$TPRoompropertyRiceCookerBill', 0],
           },
           tenants: '$tenants',
         }],
@@ -182,6 +200,12 @@ function aggregate(filter) {
             in: '$$this.monthlyRent',
           },
         },
+        TPRoompropertyRiceCookerBill: {
+          $map: {
+            input: '$transientPrivateRoomProperties',
+            in: '$$this.riceCookerBill',
+          },
+        },
       }).project({
         number: 1,
         floor: 1,
@@ -197,6 +221,9 @@ function aggregate(filter) {
           monthlyRent: {
             $arrayElemAt: ['$TPRoompropertyMonthlyRent', 0],
           },
+          riceCookerBill: {
+            $arrayElemAt: ['$TPRoompropertyRiceCookerBill', 0],
+          },
           tenants: '$tenants',
         }],
       });
@@ -209,6 +236,13 @@ function aggregate(filter) {
         let: {bedspaces: '$bedspaces'},
         pipeline: [
           {
+            $match: {
+              $expr: {
+                $in: ['$_id', '$$bedspaces'],
+              },
+            },
+          },
+          {
             $lookup: {
               from: 'tenants',
               localField: 'decks.tenant',
@@ -302,6 +336,8 @@ function aggregate(filter) {
         dueRent: 0,
         created_at: 0,
         updatedAt: 0,
+      }).sort({
+        number: 1,
       });
       break;
     case FilterType.BEDSPACEROOMBYOBJECTID:
@@ -312,6 +348,13 @@ function aggregate(filter) {
         let: {bedspaces: '$bedspaces'},
         pipeline: [
           {
+            $match: {
+              $expr: {
+                $in: ['$_id', '$$bedspaces'],
+              },
+            },
+          },
+          {
             $lookup: {
               from: 'tenants',
               localField: 'decks.tenant',
@@ -400,13 +443,6 @@ function aggregate(filter) {
           },
         ],
         as: 'bedspaces',
-      }).project({
-        tenants: 0,
-        dueRent: 0,
-        created_at: 0,
-        updatedAt: 0,
-        transientPrivateRoomProperties: 0,
-        __v: 0,
       });
       break;
     case FilterType.ADVANCESEARCHBEDSPACEROOMS:
@@ -415,6 +451,13 @@ function aggregate(filter) {
             from: 'beds',
             let: {bedspaces: '$bedspaces'},
             pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $in: ['$_id', '$$bedspaces'],
+                  },
+                },
+              },
               {
                 $lookup: {
                   from: 'tenants',

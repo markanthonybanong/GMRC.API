@@ -33,6 +33,10 @@ const bedSchema = new Schema({
       type: Number,
       trim: true,
     },
+    riceCookerBill: {
+      type: Number,
+      trim: true,
+    },
     monthlyRent: {
       type: Number,
       trim: true,

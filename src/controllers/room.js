@@ -125,6 +125,7 @@ exports.createDeckInBed = async (req, res) => {
           decks: {
             dueRentDate: decks[0].dueRentDate,
             monthlyRent: decks[0].monthlyRent,
+            riceCookerBill: decks[0].riceCookerBill,
             number: decks[0].number,
             status: decks[0].status,
             tenant: decks[0].tenantObjectId,
@@ -163,6 +164,7 @@ exports.updateDeckInBed = async (req, res) => {
         $set: {
           'decks.$.dueRentDate': deck.dueRentDate,
           'decks.$.monthlyRent': deck.monthlyRent,
+          'decks.$.riceCookerBill': deck.riceCookerBill,
           'decks.$.number': deck.number,
           'decks.$.status': deck.status,
           'decks.$.tenant': deck.tenantObjectId,

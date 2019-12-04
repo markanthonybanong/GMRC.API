@@ -22,6 +22,7 @@ exports.FilterType = Object.freeze({
   ROOMPAYMENTBYOBJECTID: 'roomPaymentByObjectId',
   ADVANCESEARCHROOMPAYMENT: 'advanceSearchRoomPayment',
   ROOMPAYMENTSINFOURMONTHS: 'roomPaymentsInFourMonths',
+  ROOMPAYMENTSBYDATE: 'roomPaymentsByDate',
   ALLUNSETTLEBILLS: 'allUnsettleBills',
   UNSETTLEBILLBYOBJECTID: 'unsettleBillByObjectId',
   ADVANCESEARCHUNSETTLEBILL: 'advanceSearchUnsettleBill',

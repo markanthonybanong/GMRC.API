@@ -89,6 +89,18 @@ function aggregate(filter) {
         __v: 0,
       });
       break;
+    case FilterType.ROOMPAYMENTSBYDATE:
+      aggregate.match({
+        date: filter.date,
+      }).sort({
+        roomNumber: 1,
+        date: 1,
+      }).project({
+        created_at: 0,
+        updatedAt: 0,
+        __v: 0,
+      });
+      break;
   }
   return aggregate;
 }
