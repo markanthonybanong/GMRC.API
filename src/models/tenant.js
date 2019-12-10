@@ -5,6 +5,10 @@ const {TypeOfNetworks} = require('../core/enums/typeOfNetwork');
 const mongooseAggregatePaginate = require('mongoose-aggregate-paginate');
 
 const tenantSchema = new Schema({
+  tenantImage: {
+    data: Buffer,
+    contentType: String,
+  },
   firstname: {
     type: String,
     required: true,
