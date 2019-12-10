@@ -6,6 +6,7 @@ const roomRoutes = require('./room');
 const tenantRoutes = require('./tenant');
 const inquiryRoutes = require('./inquiry');
 const paymentRoutes = require('./payment');
+const roomAccountRoutes = require('./roomAccount');
 const userRoutes = require('./user');
 const authRoutes = require('./auth');
 module.exports = () => {
@@ -46,6 +47,12 @@ module.exports = () => {
       '/api/payment',
       passport.authenticate('jwt', {session: false}),
       paymentRoutes(),
+  );
+
+  routes.use(
+      '/api/roomAccount',
+      passport.authenticate('jwt', {session: false}),
+      roomAccountRoutes(),
   );
 
   return routes;

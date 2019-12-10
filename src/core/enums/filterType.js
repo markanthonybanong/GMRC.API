@@ -29,4 +29,7 @@ exports.FilterType = Object.freeze({
   ALLPENALTIES: 'allPenalties',
   PENALTYBYOBJECTID: 'penaltyByObjectId',
   ADVANCESEARCHPENALTY: 'advanceSearchPenalty',
+  ALLROOMACCOUNTS: 'allRoomAccounts',
+  ROOMACCOUNTBYOBJECTID: 'roomAccountByObjectId',
+  ROOMACCOUNTBYROOMNUMBER: 'roomAccountByRoomNumber',
 });
