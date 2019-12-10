@@ -27,7 +27,6 @@ exports.create = async (req, res) => {
     willOccupyIn,
     gender,
     roomType,
-    status,
     bedInfos,
   } = req.body;
 
@@ -39,7 +38,6 @@ exports.create = async (req, res) => {
     phoneNumber: phoneNumber,
     gender: gender,
     roomType: roomType,
-    status: status,
     bedInfos: bedInfos,
   });
   inquiry.save( (err, inquiry) => {

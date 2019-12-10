@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const mongooseAggregatePaginate = require('mongoose-aggregate-paginate');
 const {Genders} = require('../core/enums/gender');
 const {RoomTypes} = require('../core/enums/roomTypes');
-const {InquiryStatus} = require('../core/enums/inquiryStatus');
+
 const inquirySchema = new Schema({
   name: {
     type: String,
@@ -40,12 +40,6 @@ const inquirySchema = new Schema({
     type: String,
     trim: true,
     enum: Object.values(RoomTypes),
-    required: true,
-  },
-  status: {
-    type: String,
-    trim: true,
-    enum: Object.values(InquiryStatus),
     required: true,
   },
   bedInfos: [{

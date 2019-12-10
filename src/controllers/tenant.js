@@ -4,6 +4,7 @@ const tenantAggregate = require('../aggregation/tenant');
 
 exports.create = async (req, res) => {
   const {
+    tenantImage,
     firstname,
     middlename,
     lastname,
@@ -17,6 +18,7 @@ exports.create = async (req, res) => {
     address,
   } = req.body;
   const tenant = new Tenant({
+    tenantImage: tenantImage,
     firstname: firstname,
     middlename: middlename,
     lastname: lastname,
@@ -42,6 +44,7 @@ exports.create = async (req, res) => {
 };
 exports.update = async (req, res) => {
   const {
+    tenantImage,
     firstname,
     middlename,
     lastname,
@@ -57,6 +60,7 @@ exports.update = async (req, res) => {
   const {id: tenantId} = req.params;
   Tenant.findByIdAndUpdate(tenantId,
       {
+        tenantImage: tenantImage,
         firstname: firstname,
         middlename: middlename,
         lastname: lastname,

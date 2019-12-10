@@ -13,7 +13,7 @@ function aggregate(filter) {
   switch (filter.type) {
     case FilterType.ALLTENANTS: {
       aggregate.sort({
-        roomNumber: 1,
+        firstname: 1,
       }).project({
         created_at: 0,
         updatedAt: 0,
