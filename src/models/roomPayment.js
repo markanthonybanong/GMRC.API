@@ -116,11 +116,19 @@ const roomPaymentSchema = new Schema({
       type: Number,
       trim: true,
     },
+    rentToPay: {
+      type: Number,
+      trim: true,
+    },
     rentInterestAdded: {
       type: String,
       trim: true,
     },
     riceCookerBill: {
+      type: Number,
+      trim: true,
+    },
+    riceCookerBillToPay: {
       type: Number,
       trim: true,
     },
