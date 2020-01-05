@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-exports.generate = (password, rounds = 14) => {
+exports.generate = (password, rounds = 14) => {  
   const hash = bcrypt.hashSync(password, rounds);
   return hash;
 };

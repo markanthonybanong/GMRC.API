@@ -1,16 +1,11 @@
 /* eslint-disable max-len */
 const httpStatusCode = require('http-status-codes');
-const User = require('../models/user');
+const AdminUser = require('../models/adminUser');
+const SuperAdminUser = require('../models/superAdminUser');
 const hash = require('../utils/password');
-exports.create = async (req, res) => {
-  const {
-    email,
-    password,
-  } = req.body;
-
-  const user = new User({
-    email: email,
-    password: hash.generate(password),
+exports.createAdmin = async (req, res) => {
+  const user = new AdminUser({
+    password: hash.generate(req.body.numberString),
   });
   user.save( (err, user) => {
     if (err) {
@@ -20,7 +15,24 @@ exports.create = async (req, res) => {
           });
     } else {
       res.status(httpStatusCode.OK)
-          .send(`User created email:"${user.email}" password:"${user.password}"`);
+          .json(user);
+    }
+  });
+};
+
+exports.createSuperAdmin = async (req, res) => {
+  const user = new SuperAdminUser({
+    password: hash.generate(req.body.password),
+  });
+  user.save( (err, user) => {
+    if (err) {
+      res.status(httpStatusCode.BAD_REQUEST)
+          .send({
+            message: err,
+          });
+    } else {
+      res.status(httpStatusCode.OK)
+          .json(user);
     }
   });
 };

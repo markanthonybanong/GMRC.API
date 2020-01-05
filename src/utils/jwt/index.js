@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 const jwt = require('jsonwebtoken');
 
-exports.signToken = (id) => jwt.sign({
+exports.signSuperAdminToken = (id) => jwt.sign({
   iss: 'GMRC',
   sub: id,
   iat: new Date().getTime(), // current time in milliseconds
@@ -9,3 +9,13 @@ exports.signToken = (id) => jwt.sign({
 },
 process.env.JWT_SECRET,
 );
+
+exports.signAdminToken = (id) => jwt.sign({
+  iss: 'GMRC',
+  sub: id,
+  iat: new Date().getTime(), // current time in milliseconds
+  exp: Math.floor(Date.now() / 1000) + (2 * 3600), // add 2 hour to current date time
+},
+process.env.JWT_SECRET,
+);
+

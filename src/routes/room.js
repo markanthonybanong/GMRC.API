@@ -38,6 +38,6 @@ module.exports = () => {
   roomRoutes.put('/removeTenantInUnsettleBill', roomController.removeTenantInUnsettleBill);
 
   roomRoutes.delete('/removeUnsettleBill/:id', roomController.removeUnsettleBill);
-  
+
   return roomRoutes;
 };
