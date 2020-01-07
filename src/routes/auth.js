@@ -12,11 +12,7 @@ module.exports = () => {
 
   authRoutes.post('/adminLogin',
       passport.authenticate('localAdmin', {session: false}),
-      authController.superAdminLogin,
-  );
-  authRoutes.get('/validate-token',
-      passport.authenticate('jwt', {session: false}),
-      authController.validate
+      authController.adminLogin,
   );
 
   return authRoutes;
