@@ -1,7 +1,6 @@
 const JwtStrategy = require('passport-jwt').Strategy;
 const {ExtractJwt} = require('passport-jwt');
-const Users = require('../../../models/adminUser');
-
+const toUseModel = require('../../../utils/jwt/model');
 module.exports = (passport) => {
   passport.use(
       new JwtStrategy(
@@ -10,7 +9,7 @@ module.exports = (passport) => {
             secretOrKey: process.env.JWT_SECRET,
           },
           (payload, done) => {
-            Users.findOne({_id: payload.sub})
+            toUseModel(payload.userType).findOne({_id: payload.sub})
                 .then((user) => {
                   if (!user) {
                     return done(null, false);
