@@ -10,8 +10,7 @@ exports.signSuperAdminToken = (id) => jwt.sign({
 },
 process.env.JWT_SECRET,
 );
-
-exports.signAdminToken = (id) => jwt.sign({
+exports.signAdminToken = (id) => jwt.sign({ 
   iss: 'GMRC',
   userType: UserTypes.ADMIN,
   sub: id,

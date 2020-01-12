@@ -24,6 +24,7 @@ exports.createSuperAdmin = async (req, res) => {
   const user = new SuperAdminUser({
     password: hash.generate(req.body.password),
   });
+
   user.save( (err, user) => {
     if (err) {
       res.status(httpStatusCode.BAD_REQUEST)

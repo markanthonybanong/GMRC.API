@@ -18,7 +18,6 @@ const inquirySchema = new Schema({
   howDidYouFindUs: {
     type: String,
     trim: true,
-    required: true,
   },
   willOccupyIn: {
     type: Date,
@@ -28,19 +27,14 @@ const inquirySchema = new Schema({
   phoneNumber: {
     type: Number,
     trim: true,
-    required: true,
   },
   gender: {
     type: String,
     trim: true,
-    enum: Object.values(Genders),
-    required: true,
   },
   roomType: {
     type: String,
     trim: true,
-    enum: Object.values(RoomTypes),
-    required: true,
   },
   bedInfos: [{
     bedNumber: {
