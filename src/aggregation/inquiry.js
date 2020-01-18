@@ -14,8 +14,13 @@ function aggregate(filter) {
   switch (filter.type) {
     case FilterType.ALLINQUIRIES:
       aggregate.sort({
-        willOccupyIn: -1,
+        willOccupyIn: 1,
       }).project({
+        created_at: 0,
+        updatedAt: 0,
+        __v: 0,
+      });
+      aggregate.project({
         created_at: 0,
         updatedAt: 0,
         __v: 0,
