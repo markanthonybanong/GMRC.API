@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const {RoomTypes} = require('../core/enums/roomTypes');
-const {HasAircon} = require('../core/enums/hasAircon');
 const {RoomStatuses} = require('../core/enums/roomStatus');
 const mongooseAggregatePaginate = require('mongoose-aggregate-paginate');
 const roomSchema = new Schema({
@@ -14,7 +13,6 @@ const roomSchema = new Schema({
   floor: {
     type: Number,
     trim: true,
-    required: true,
   },
   type: {
     type: String,
@@ -25,10 +23,8 @@ const roomSchema = new Schema({
   aircon: {
     type: String,
     trim: true,
-    enum: Object.values(HasAircon),
-    required: true,
   },
-  transientPrivateRoomProperties: [{
+  roomProperties: [{
     status: {
       type: String,
       trim: true,
