@@ -21,8 +21,6 @@ module.exports = () => {
 
   roomRoutes.post('/addTenantInTransientPrivateRoom', roomController.addTenantInTransientPrivateRoom);
 
-  roomRoutes.put('/updateTenantInTransientPrivateRoom', roomController.updateTenantInTransientPrivateRoom);
-
   roomRoutes.put('/removeTenantInTransientPrivateRoom', roomController.removeTenantInTransientPrivateRoom);
 
   roomRoutes.post('/getTransientPrivateRoomByTenantsObjectId', roomController.getTransientPrivateRoomByTenantsObjectId);

@@ -20,6 +20,26 @@ function aggregate(filter) {
           {type: RoomTypes.BEDSPACE},
           {type: RoomTypes.SEMIPRIVATE},
         ],
+      }).lookup({
+        from: 'tenants',
+        localField: 'roomProperties.tenants',
+        foreignField: '_id',
+        as: 'tenants',
+      }).unwind({
+        path: '$roomProperties',
+        preserveNullAndEmptyArrays: true,
+      }).project({
+        number: 1,
+        floor: 1,
+        type: 1,
+        aircon: 1,
+        roomProperties: [{
+          status: '$roomProperties.status',
+          dueRentDate: '$roomProperties.dueRentDate',
+          monthlyRent: '$roomProperties.monthlyRent',
+          riceCookerBill: '$roomProperties.riceCookerBill',
+          tenants: '$tenants',
+        }],
       }).sort({
         number: 1,
       }).project({
@@ -163,6 +183,7 @@ function aggregate(filter) {
       });
       break;
     case FilterType.ADVANCESEARCHTRANSIENTPRIVATEROOMS:
+      console.log('the filter ', filter);
       aggregate.match({
         $or: [
           {type: RoomTypes.TRANSIENT},
