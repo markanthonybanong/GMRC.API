@@ -19,6 +19,8 @@ exports.setValueForWillOccupyInKey = function(searchFilter) {
   return modifiedFilter;
 };
 exports.create = async (req, res) => {
+  console.log('req.body', req.body);
+  
   const {
     name,
     roomNumber,

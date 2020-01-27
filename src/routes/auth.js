@@ -5,14 +5,14 @@ const passport = require('passport');
 const authController = require('../controllers/auth');
 require('../config/passport')(passport);
 module.exports = () => {
-  authRoutes.post('/',
-      passport.authenticate('local', {session: false}),
-      authController.login,
+  authRoutes.post('/superAdminLogin',
+      passport.authenticate('localSuperAdmin', {session: false}),
+      authController.superAdminLogin,
   );
 
-  authRoutes.get('/validate-token/',
-      passport.authenticate('jwt', {session: false}),
-      authController.validate
+  authRoutes.post('/adminLogin',
+      passport.authenticate('localAdmin', {session: false}),
+      authController.adminLogin,
   );
 
   return authRoutes;
