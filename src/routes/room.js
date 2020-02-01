@@ -8,6 +8,8 @@ module.exports = () => {
   roomRoutes.put('/updateRoom', roomController.update);
 
   roomRoutes.post('/createBed', roomController.createBed);
+  
+  roomRoutes.put('/updateBed', roomController.updateBed);
 
   roomRoutes.post('/createDeckInBed', roomController.createDeckInBed);
 

@@ -183,68 +183,62 @@ function aggregate(filter) {
       });
       break;
     case FilterType.ADVANCESEARCHTRANSIENTPRIVATEROOMS:
-      console.log('the filter ', filter);
       aggregate.match({
         $or: [
           {type: RoomTypes.TRANSIENT},
           {type: RoomTypes.PRIVATE},
         ],
-      }).match({
-        $and: [filter.roomFilter],
-      }).lookup({
-        from: 'tenants',
-        localField: 'roomProperties.tenants',
-        foreignField: '_id',
-        as: 'tenants',
       }).project({
         number: 1,
         floor: 1,
         type: 1,
         aircon: 1,
-        tenants: 1,
-        TPRoompropertyStatus: {
+        roomProperties: 1,
+        statusArr: {
           $map: {
             input: '$roomProperties',
-            in: '$$this.status',
+            as: 'property',
+            in:
+              '$$property.status',
           },
         },
-        TPRoompropertyDueRentDate: {
+        dueRentArr: {
           $map: {
             input: '$roomProperties',
-            in: '$$this.dueRentDate',
+            as: 'property',
+            in:
+              '$$property.dueRentDate',
           },
         },
-        TPRoompropertyMonthlyRent: {
-          $map: {
-            input: '$roomProperties',
-            in: '$$this.monthlyRent',
-          },
-        },
-        TPRoompropertyRiceCookerBill: {
-          $map: {
-            input: '$roomProperties',
-            in: '$$this.riceCookerBill',
-          },
-        },
+      }).project({
+        number: 1,
+        floor: 1,
+        type: 1,
+        aircon: 1,
+        roomProperties: 1,
+        status: {$arrayElemAt: ['$statusArr', 0]},
+        dueRentDate: {$arrayElemAt: ['$dueRentArr', 0]},
+      }).match({
+        $and: [filter.roomFilter],
+      }).unwind({
+        path: '$roomProperties',
+        preserveNullAndEmptyArrays: true,
+      }).lookup({
+        from: 'tenants',
+        localField: 'roomProperties.tenants',
+        foreignField: '_id',
+        as: 'tenant',
       }).project({
         number: 1,
         floor: 1,
         type: 1,
         aircon: 1,
         roomProperties: [{
-          status: {
-            $arrayElemAt: ['$TPRoompropertyStatus', 0],
-          },
-          dueRentDate: {
-            $arrayElemAt: ['$TPRoompropertyDueRentDate', 0],
-          },
-          monthlyRent: {
-            $arrayElemAt: ['$TPRoompropertyMonthlyRent', 0],
-          },
-          riceCookerBill: {
-            $arrayElemAt: ['$TPRoompropertyRiceCookerBill', 0],
-          },
-          tenants: '$tenants',
+          tenants: '$tenant',
+          status: '$roomProperties.status',
+          dueRentDate: '$roomProperties.dueRentDate',
+          monthlyRent: '$roomProperties.monthlyRent',
+          riceCookerBill: '$roomProperties.riceCookerBill',
         }],
       });
       break;
@@ -354,6 +348,7 @@ function aggregate(filter) {
       }).project({
         tenants: 0,
         dueRent: 0,
+        roomProperties: 0,
         created_at: 0,
         updatedAt: 0,
       }).sort({
@@ -365,19 +360,19 @@ function aggregate(filter) {
         _id: objectId(filter.roomObjectId),
       }).lookup({
         from: 'beds',
-        let: {bedspaces: '$bedspaces'},
+        let: {bedspace: '$bedspaces'},
         pipeline: [
           {
             $match: {
               $expr: {
-                $in: ['$_id', '$$bedspaces'],
+                $in: ['$_id', '$$bedspace'],
               },
             },
           },
           {
             $lookup: {
               from: 'tenants',
-              localField: 'decks.tenant',
+              localField: 'decks.tenantObjectId',
               foreignField: '_id',
               as: 'tenants',
             },
@@ -385,7 +380,7 @@ function aggregate(filter) {
           {
             $lookup: {
               from: 'tenants',
-              localField: 'decks.away.tenant',
+              localField: 'decks.away.tenantObjectId',
               foreignField: '_id',
               as: 'awayTenants',
             },
@@ -403,7 +398,7 @@ function aggregate(filter) {
                         tenant: {
                           $cond: {
                             if: {
-                              $ne: ['$$deck.tenant', null],
+                              $ne: ['$$deck.tenantObjectId', null],
                             },
                             then: {
                               $arrayElemAt: [
@@ -419,31 +414,55 @@ function aggregate(filter) {
                         away: {
                           $cond: {
                             if: {
-                              $ne: ['$$deck.away', null],
+                              $size: '$$deck.away',
                             },
+                            // then: [{
+                            //   willReturnIn: {$arrayElemAt: ['$$deck.away.willReturnIn', 0]},
+                            //   inDate: {$arrayElemAt: ['$$deck.away.inDate', 0]},
+                            //   inTime: {$arrayElemAt: ['$$deck.away.inTime', 0]},
+                            //   outDate: {$arrayElemAt: ['$$deck.away.outDate', 0]},
+                            //   outTime: {$arrayElemAt: ['$$deck.away.outTime', 0]},
+                            //   status: {$arrayElemAt: ['$$deck.away.status', 0]},
+                            //   dueRentDate: {$arrayElemAt: ['$$deck.away.dueRentDate', 0]},
+                            //   rent: {$arrayElemAt: ['$$deck.away.rent', 0]},
+                            //   tenant: {
+                            //     $cond: {
+                            //       if: {
+                            //         $ne: [{$arrayElemAt: ['$$deck.away.tenant', 0]}, null],
+                            //       },
+                            //       then: {
+                            //         $arrayElemAt: [
+                            //           '$awayTenants',
+                            //           {$indexOfArray: ['$awayTenants._id', {$arrayElemAt: ['$$deck.away.tenant', 0]}]},
+                            //         ],
+                            //       },
+                            //       else: null,
+                            //     },
+                            //   },
+                            // }],
                             then: [{
-                              willReturnIn: {$arrayElemAt: ['$$deck.away.willReturnIn', 0]},
-                              inDate: {$arrayElemAt: ['$$deck.away.inDate', 0]},
-                              inTime: {$arrayElemAt: ['$$deck.away.inTime', 0]},
-                              outDate: {$arrayElemAt: ['$$deck.away.outDate', 0]},
-                              outTime: {$arrayElemAt: ['$$deck.away.outTime', 0]},
-                              status: {$arrayElemAt: ['$$deck.away.status', 0]},
-                              dueRentDate: {$arrayElemAt: ['$$deck.away.dueRentDate', 0]},
-                              rent: {$arrayElemAt: ['$$deck.away.rent', 0]},
-                              tenant: {
-                                $cond: {
-                                  if: {
-                                    $ne: [{$arrayElemAt: ['$$deck.away.tenant', 0]}, null],
-                                  },
-                                  then: {
-                                    $arrayElemAt: [
-                                      '$awayTenants',
-                                      {$indexOfArray: ['$awayTenants._id', {$arrayElemAt: ['$$deck.away.tenant', 0]}]},
-                                    ],
-                                  },
-                                  else: null,
+
+                              $mergeObjects: [
+                                {
+                                  $arrayElemAt: ['$$deck.away', 0],
                                 },
-                              },
+                                {
+                                  tenant: {
+                                    $cond: {
+                                      if: {
+                                        $ne: [{$arrayElemAt: ['$$deck.away.tenantObjectId', 0]}, null],
+                                      },
+                                      then: {
+                                        $arrayElemAt: [
+                                          '$awayTenants',
+                                          {$indexOfArray: ['$awayTenants._id', {$arrayElemAt: ['$$deck.away.tenantObjectId', 0]}]},
+                                        ],
+                                      },
+                                      else: null,
+                                    },
+                                  },
+                                },
+                              ],
                             }],
                             else: null,
                           },
@@ -463,6 +482,8 @@ function aggregate(filter) {
           },
         ],
         as: 'bedspaces',
+      }).project({
+        roomProperties: 0,
       });
       break;
     case FilterType.ADVANCESEARCHBEDSPACEROOMS:
@@ -859,6 +880,7 @@ function aggregate(filter) {
             updatedAt: false,
             tenants: false,
             dueRent: false,
+            roomProperties: false,
             __v: false,
           });
       break;

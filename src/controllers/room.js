@@ -89,13 +89,11 @@ exports.update = async (req, res) => {
 exports.createBed = async (req, res) => {
   const {
     roomObjectId,
-    number,
+    bed
   } = req.body;
-
-  const bedspace = new Bed({
-    room: roomObjectId,
-    number: number,
-  });
+  console.log('bed body ', bed);
+  
+  const bedspace = new Bed(bed);
 
   bedspace.save( (err, bedspace) => {
     if (err) {
@@ -110,6 +108,29 @@ exports.createBed = async (req, res) => {
     }
   });
 },
+exports.updateBed = async (req, res) => {
+  const {
+    bedObjectId,
+    bed,
+  } = req.body;
+  console.log('req.body ', req.body);
+  
+  Bed.findOneAndUpdate(bedObjectId,
+      bed,
+      {new: true},
+      (err, bedspace) => {
+        if (err) {
+          res.status(httpStatusCode.BAD_REQUEST)
+              .send({
+                message: err,
+              });
+        } else {
+          res.status(httpStatusCode.OK)
+              .json(bedspace);
+        }
+      },
+  );
+};
 exports.createDeckInBed = async (req, res) => { 
   const {
     _id,

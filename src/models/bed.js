@@ -4,20 +4,14 @@ const {DeckStatuses} = require('../core/enums/deckStatus');
 const mongooseAggregatePaginate = require('mongoose-aggregate-paginate');
 
 const bedSchema = new Schema({
-  room: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Room',
-  },
   number: {
     type: Number,
     trim: true,
-    required: true,
   },
   decks: [{
     number: {
       type: Number,
       trim: true,
-      required: true,
     },
     status: {
       type: String,
@@ -25,7 +19,7 @@ const bedSchema = new Schema({
       enum: Object.values(DeckStatuses),
       required: true,
     },
-    tenant: {
+    tenantObjectId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Tenant',
     },
@@ -75,7 +69,7 @@ const bedSchema = new Schema({
         type: Number,
         trim: true,
       },
-      tenant: {
+      tenantObjectId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Tenant',
       },
