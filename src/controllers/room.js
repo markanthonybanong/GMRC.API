@@ -91,8 +91,7 @@ exports.createBed = async (req, res) => {
     roomObjectId,
     bed
   } = req.body;
-  console.log('bed body ', bed);
-  
+
   const bedspace = new Bed(bed);
 
   bedspace.save( (err, bedspace) => {
@@ -113,9 +112,9 @@ exports.updateBed = async (req, res) => {
     bedObjectId,
     bed,
   } = req.body;
-  console.log('req.body ', req.body);
+  console.log('bed update ', req.body);
   
-  Bed.findOneAndUpdate(bedObjectId,
+  Bed.findByIdAndUpdate(bedObjectId,
       bed,
       {new: true},
       (err, bedspace) => {
