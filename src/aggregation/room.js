@@ -28,12 +28,7 @@ function aggregate(filter) {
       }).unwind({
         path: '$roomProperties',
         preserveNullAndEmptyArrays: true,
-      }).project({
-        number: 1,
-        floor: 1,
-        type: 1,
-        aircon: 1,
-        bedspaces: 1,
+      }).addFields({
         roomProperties: [{
           status: '$roomProperties.status',
           dueRentDate: '$roomProperties.dueRentDate',
@@ -168,12 +163,7 @@ function aggregate(filter) {
         localField: 'roomProperties.tenants',
         foreignField: '_id',
         as: 'tenants',
-      }).project({
-        number: 1,
-        floor: 1,
-        type: 1,
-        aircon: 1,
-        tenants: 1,
+      }).addFields({
         TPRoompropertyStatus: {
           $map: {
             input: '$roomProperties',
@@ -230,12 +220,7 @@ function aggregate(filter) {
         localField: 'roomProperties.tenants',
         foreignField: '_id',
         as: 'tenants',
-      }).project({
-        number: 1,
-        floor: 1,
-        type: 1,
-        aircon: 1,
-        tenants: 1,
+      }).addFields({
         TPRoompropertyStatus: {
           $map: {
             input: '$roomProperties',
@@ -288,12 +273,7 @@ function aggregate(filter) {
           {type: RoomTypes.TRANSIENT},
           {type: RoomTypes.PRIVATE},
         ],
-      }).project({
-        number: 1,
-        floor: 1,
-        type: 1,
-        aircon: 1,
-        roomProperties: 1,
+      }).addFields({
         statusArr: {
           $map: {
             input: '$roomProperties',
@@ -564,19 +544,19 @@ function aggregate(filter) {
       aggregate.match({type: RoomTypes.BEDSPACE})
           .lookup({
             from: 'beds',
-            let: {bedspaces: '$bedspaces'},
+            let: {bedspace: '$bedspaces'},
             pipeline: [
               {
                 $match: {
                   $expr: {
-                    $in: ['$_id', '$$bedspaces'],
+                    $in: ['$_id', '$$bedspace'],
                   },
                 },
               },
               {
                 $lookup: {
                   from: 'tenants',
-                  localField: 'decks.tenant',
+                  localField: 'decks.tenantObjectId',
                   foreignField: '_id',
                   as: 'tenants',
                 },
@@ -584,7 +564,7 @@ function aggregate(filter) {
               {
                 $lookup: {
                   from: 'tenants',
-                  localField: 'decks.away.tenant',
+                  localField: 'decks.away.tenantObjectId',
                   foreignField: '_id',
                   as: 'awayTenants',
                 },
@@ -602,12 +582,12 @@ function aggregate(filter) {
                             tenant: {
                               $cond: {
                                 if: {
-                                  $ne: ['$$deck.tenant', null],
+                                  $ne: ['$$deck.tenantObjectId', null],
                                 },
                                 then: {
                                   $arrayElemAt: [
                                     '$tenants',
-                                    {'$indexOfArray': ['$tenants._id', '$$deck.tenant']},
+                                    {'$indexOfArray': ['$tenants._id', '$$deck.tenantObjectId']},
                                   ],
                                 },
                                 else: null,
@@ -618,31 +598,30 @@ function aggregate(filter) {
                             away: {
                               $cond: {
                                 if: {
-                                  $ne: ['$$deck.away', null],
+                                  $size: '$$deck.away',
                                 },
                                 then: [{
-                                  willReturnIn: {$arrayElemAt: ['$$deck.away.willReturnIn', 0]},
-                                  inDate: {$arrayElemAt: ['$$deck.away.inDate', 0]},
-                                  inTime: {$arrayElemAt: ['$$deck.away.inTime', 0]},
-                                  outDate: {$arrayElemAt: ['$$deck.away.outDate', 0]},
-                                  outTime: {$arrayElemAt: ['$$deck.away.outTime', 0]},
-                                  status: {$arrayElemAt: ['$$deck.away.status', 0]},
-                                  dueRentDate: {$arrayElemAt: ['$$deck.away.dueRentDate', 0]},
-                                  rent: {$arrayElemAt: ['$$deck.away.rent', 0]},
-                                  tenant: {
-                                    $cond: {
-                                      if: {
-                                        $ne: [{$arrayElemAt: ['$$deck.away.tenant', 0]}, null],
-                                      },
-                                      then: {
-                                        $arrayElemAt: [
-                                          '$awayTenants',
-                                          {$indexOfArray: ['$awayTenants._id', {$arrayElemAt: ['$$deck.away.tenant', 0]}]},
-                                        ],
-                                      },
-                                      else: null,
+                                  $mergeObjects: [
+                                    {
+                                      $arrayElemAt: ['$$deck.away', 0],
                                     },
-                                  },
+                                    {
+                                      tenant: {
+                                        $cond: {
+                                          if: {
+                                            $ne: [{$arrayElemAt: ['$$deck.away.tenantObjectId', 0]}, null],
+                                          },
+                                          then: {
+                                            $arrayElemAt: [
+                                              '$awayTenants',
+                                              {$indexOfArray: ['$awayTenants._id', {$arrayElemAt: ['$$deck.away.tenantObjectId', 0]}]},
+                                            ],
+                                          },
+                                          else: null,
+                                        },
+                                      },
+                                    },
+                                  ],
                                 }],
                                 else: null,
                               },
@@ -741,40 +720,54 @@ function aggregate(filter) {
               },
             },
             checkIfGivenBedspaceFilterMatch: {
-              $cond: {
-                if: {
-                  $gt: [{$size: '$bedspaces'}, 0],
-                },
-                then: {
+              $map: {
+                input: '$bedspaces',
+                as: 'bedspace',
+                in: {
                   $map: {
-                    input: '$bedspaces',
-                    as: 'bedspace',
+                    input: '$$bedspace.decks',
+                    as: 'deck',
                     in: {
-                      $cond: {
-                        if: {
-                          $ne: ['$$bedspace.decks', null],
-                        },
-                        then: {
-                          $map: {
-                            input: '$$bedspace.decks',
-                            as: 'deck',
-                            in: {
+                      $switch: {
+                        branches: [
+                          {
+                            case: {
+                              $and: [
+                                {$ne: [filter.bedspaceFilter.deckStatus, null]},
+                                {$ne: [filter.bedspaceFilter.awayDeckStatus, null]},
+                              ],
+                            },
+                            then: {
+                              $cond: {
+                                if: {
+                                  $and: [
+                                    {$eq: ['$$deck.status', filter.bedspaceFilter.deckStatus]},
+                                    {$eq: [{$arrayElemAt: ['$$deck.away.status', 0]}, filter.bedspaceFilter.awayDeckStatus]},
+                                  ],
+                                },
+                                then: true,
+                                else: false,
+                              },
+                            },
+                          },
+                          {
+                            case: {
+                              $or: [
+                                {$ne: [filter.bedspaceFilter.deckStatus, null]},
+                                {$ne: [filter.bedspaceFilter.awayDeckStatus, null]},
+                              ],
+                            },
+                            then: {
                               $switch: {
                                 branches: [
                                   {
                                     case: {
-                                      $and: [
-                                        {$ne: [filter.bedspaceFilter.deckStatus, null]},
-                                        {$ne: [filter.bedspaceFilter.awayDeckStatus, null]},
-                                      ],
+                                      $ne: [filter.bedspaceFilter.deckStatus, null],
                                     },
                                     then: {
                                       $cond: {
                                         if: {
-                                          $and: [
-                                            {$eq: ['$$deck.status', filter.bedspaceFilter.deckStatus]},
-                                            {$eq: [{$arrayElemAt: ['$$deck.away.status', 0]}, filter.bedspaceFilter.awayDeckStatus]},
-                                          ],
+                                          $eq: ['$$deck.status', filter.bedspaceFilter.deckStatus],
                                         },
                                         then: true,
                                         else: false,
@@ -783,44 +776,15 @@ function aggregate(filter) {
                                   },
                                   {
                                     case: {
-                                      $or: [
-                                        {$ne: [filter.bedspaceFilter.deckStatus, null]},
-                                        {$ne: [filter.bedspaceFilter.awayDeckStatus, null]},
-                                      ],
+                                      $ne: [filter.bedspaceFilter.awayDeckStatus, null],
                                     },
                                     then: {
-                                      $switch: {
-                                        branches: [
-                                          {
-                                            case: {
-                                              $ne: [filter.bedspaceFilter.deckStatus, null],
-                                            },
-                                            then: {
-                                              $cond: {
-                                                if: {
-                                                  $eq: ['$$deck.status', filter.bedspaceFilter.deckStatus],
-                                                },
-                                                then: true,
-                                                else: false,
-                                              },
-                                            },
-                                          },
-                                          {
-                                            case: {
-                                              $ne: [filter.bedspaceFilter.awayDeckStatus, null],
-                                            },
-                                            then: {
-                                              $cond: {
-                                                if: {
-                                                  $eq: [{$arrayElemAt: ['$$deck.away.status', 0]}, filter.bedspaceFilter.awayDeckStatus],
-                                                },
-                                                then: true,
-                                                else: false,
-                                              },
-                                            },
-                                          },
-                                        ],
-                                        default: false,
+                                      $cond: {
+                                        if: {
+                                          $eq: [{$arrayElemAt: ['$$deck.away.status', 0]}, filter.bedspaceFilter.awayDeckStatus],
+                                        },
+                                        then: true,
+                                        else: false,
                                       },
                                     },
                                   },
@@ -829,13 +793,12 @@ function aggregate(filter) {
                               },
                             },
                           },
-                        },
-                        else: [false],
+                        ],
+                        default: false,
                       },
                     },
                   },
                 },
-                else: [[false]],
               },
             },
           }).addFields({
@@ -853,6 +816,7 @@ function aggregate(filter) {
               $switch: {
                 branches: [
                   {
+                    // user give room and deck filter
                     case: {
                       $and: [
                         {
@@ -875,7 +839,7 @@ function aggregate(filter) {
                         if: {
                           $and: [
                             {$eq: ['$isGivenRoomFilterMatch', true]},
-                            {$eq: [{$in: [true, '$isGivenBedspaceFilterMatch']}, true]},
+                            {$in: [true, '$isGivenBedspaceFilterMatch']},
                           ],
                         },
                         then: true,
@@ -884,6 +848,7 @@ function aggregate(filter) {
                     },
                   },
                   {
+                    // user give room filter only
                     case: {
                       $and: [
                         {
@@ -912,6 +877,7 @@ function aggregate(filter) {
                     },
                   },
                   {
+                    // user give bedspace filter only
                     case: {
                       $and: [
                         {
@@ -970,13 +936,7 @@ function aggregate(filter) {
         localField: 'bedspaces',
         foreignField: '_id',
         as: 'bedspaces',
-      }).project({
-        number: 1,
-        floor: 1,
-        type: 1,
-        aircon: 1,
-        bedspaces: 1,
-        transientPrivateRoomProperties: 1,
+      }).addFields({
         getTenantsObjectIdInBedspaceRooms: {
           $map: {
             input: '$bedspaces',
@@ -1020,14 +980,7 @@ function aggregate(filter) {
         tenantsObjectIdInBedspaceRooms: {
           $push: '$getTenantsObjectIdInBedspaceRooms',
         },
-      }).project({
-        bedspaces: 1,
-        number: 1,
-        floor: 1,
-        type: 1,
-        aircon: 1,
-        bedspaceRoomsTenantsObjectId: 1,
-        transientPrivateRoomProperties: 1,
+      }).addFields({
         isTenantObjectIdFoundInBedspaceRooms: {
           $in: [objectId(filter.tenantObjectId), '$tenantsObjectIdInBedspaceRooms'],
         },
@@ -1049,24 +1002,11 @@ function aggregate(filter) {
         tenantsObjectIdInTransientPrivateRooms: {
           $push: '$tenantsObjectIdInTransientPrivateRoom',
         },
-      }).project({
-        bedspaces: 1,
-        number: 1,
-        floor: 1,
-        type: 1,
-        aircon: 1,
-        transientPrivateRoomProperties: 1,
-        isTenantObjectIdFoundInBedspaceRooms: 1,
+      }).addFields({
         isTenantObjectIdFoundInTransientPrivateRooms: {
           $in: [objectId(filter.tenantObjectId), '$tenantsObjectIdInTransientPrivateRooms'],
         },
-      }).project({
-        bedspaces: 1,
-        number: 1,
-        floor: 1,
-        type: 1,
-        aircon: 1,
-        transientPrivateRoomProperties: 1,
+      }).addFields({
         displayRoom: {
           $cond: {
             if: {

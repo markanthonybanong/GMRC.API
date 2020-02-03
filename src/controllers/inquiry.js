@@ -19,8 +19,6 @@ exports.setValueForWillOccupyInKey = function(searchFilter) {
   return modifiedFilter;
 };
 exports.create = async (req, res) => {
-  console.log('req.body', req.body);
-  
   const {
     name,
     roomNumber,
@@ -64,7 +62,10 @@ exports.update = async (req, res) => {
     gender,
     roomType,
     deckNumbers,
+    bedInfos,
   } = req.body;
+  console.log('update req.body ', req.body);
+  
   const {id: inquiryId} = req.params;
   Inquiry.findByIdAndUpdate(inquiryId,
       {
@@ -76,6 +77,7 @@ exports.update = async (req, res) => {
         gender: gender,
         roomType: roomType,
         deckNumbers: deckNumbers,
+        bedInfos: bedInfos,
       },
       {new: true},
       (err, inquiry) => {
